@@ -1,0 +1,31 @@
+{% load static %}
+    <!-- Header Section -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="{% url 'home' %}" data-page="home" class="text-3xl font-serif text-primary font-bold">Family Plus</a>
+            <div class="hidden lg:flex items-center space-x-8">
+                <a href="{% url 'home' %}" data-page="home" class="text-text-dark hover:text-primary transition">Home</a>
+                <a href="{% url 'store' %}" data-page="product_list" class="text-text-dark hover:text-primary transition">Store</a>
+                {% comment %} <a href="#" data-page="product_list" class="text-text-dark hover:text-primary transition">Kids</a> {% endcomment %}
+                <a href="#" data-page="about" class="text-text-dark hover:text-primary transition">About Us</a>
+                <a href="#" data-page="contact" class="text-text-dark hover:text-primary transition">Contact</a>
+            </div>
+            <div class="flex items-center space-x-5">
+                <button class="text-text-dark hover:text-primary transition"><i class="fas fa-search"></i></button>
+                <a href="#" data-page="login" class="text-text-dark hover:text-primary transition"><i class="fas fa-user"></i></a>
+                <a href="#" data-page="cart" class="text-text-dark hover:text-primary transition relative">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="absolute -top-2 -right-2 bg-accent text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                </a>
+                <button id="mobile-menu-button" class="lg:hidden text-text-dark hover:text-primary transition"><i class="fas fa-bars text-xl"></i></button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white py-2">
+            <a href="{% url 'home' %}" data-page="home" class="block px-6 py-2 text-text-dark hover:bg-secondary">Home</a>
+            <a href="{% url 'store' %}" data-page="product_list" class="block px-6 py-2 text-text-dark hover:bg-secondary">Store</a>
+            {% comment %} <a href="#" data-page="product_list" class="block px-6 py-2 text-text-dark hover:bg-secondary">Kids</a> {% endcomment %}
+            <a href="#" data-page="about" class="block px-6 py-2 text-text-dark hover:bg-secondary">About Us</a>
+            <a href="#" data-page="contact" class="block px-6 py-2 text-text-dark hover:bg-secondary">Contact</a>
+        </div>
+    </header>

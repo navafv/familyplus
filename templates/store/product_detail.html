@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block content %}
+    <main>
+        <!-- Product Detail Page -->
+        <section id="product_detail">
+             <div class="bg-white py-16">
+                <div class="container mx-auto px-6">
+                    <p class="mb-6 text-text-light"><a href="#" data-page="home" class="hover:text-primary">Home</a> / <a href="#" data-page="product_list" class="hover:text-primary">Ladies</a> / Floral Print Summer Dress</p>
+                    <div class="flex flex-col lg:flex-row gap-12">
+                        <!-- Image Gallery -->
+                        <div class="w-full lg:w-1/2">
+                            <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" class="w-full rounded-lg shadow-md mb-4">
+                            <div class="grid grid-cols-4 gap-4">
+                                <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" class="rounded-md cursor-pointer border-2 border-primary">
+                                <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" class="rounded-md cursor-pointer border-2 border-transparent hover:border-primary">
+                                <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" class="rounded-md cursor-pointer border-2 border-transparent hover:border-primary">
+                                <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" class="rounded-md cursor-pointer border-2 border-transparent hover:border-primary">
+                            </div>
+                        </div>
+                        <!-- Product Info -->
+                        <div class="w-full lg:w-1/2">
+                            <h1 class="text-4xl font-serif text-primary">{{ single_product.product_name }}</h1>
+                            <p class="text-2xl font-bold text-text-dark my-4">₹{{ single_product.price }}</p>
+                            <p class="text-text-light leading-relaxed mb-6">{{ single_product.description }}</p>
+                            
+                            <!-- Size Selector -->
+                            <div class="mb-6">
+                                <h3 class="font-semibold mb-2">Size:</h3>
+                                <div class="flex gap-2">
+                                    <button class="w-12 h-12 border rounded-md hover:bg-primary hover:text-white transition">XS</button>
+                                    <button class="w-12 h-12 border rounded-md bg-primary text-white transition">S</button>
+                                    <button class="w-12 h-12 border rounded-md hover:bg-primary hover:text-white transition">M</button>
+                                    <button class="w-12 h-12 border rounded-md hover:bg-primary hover:text-white transition">L</button>
+                                </div>
+                            </div>
+
+                            <!-- Color Selector -->
+                             <div class="mb-6">
+                                <h3 class="font-semibold mb-2">Color:</h3>
+                                <div class="flex gap-3">
+                                    <button class="w-8 h-8 rounded-full bg-pink-300 border-2 border-text-dark" title="Pink Floral"></button>
+                                    <button class="w-8 h-8 rounded-full bg-blue-300 border-2 border-transparent hover:border-text-dark" title="Blue Floral"></button>
+                                    <button class="w-8 h-8 rounded-full bg-yellow-200 border-2 border-transparent hover:border-text-dark" title="Yellow Floral"></button>
+                                </div>
+                            </div>
+                            
+                            <!-- Quantity and Add to Cart -->
+                            <div class="flex items-center gap-4 mb-8">
+                                <div class="flex items-center border rounded-md">
+                                    <button class="px-4 py-2 text-lg">-</button>
+                                    <span class="px-4 py-2 text-lg">1</span>
+                                    <button class="px-4 py-2 text-lg">+</button>
+                                </div>
+                                
+                                {% if single_product.stock <= 0 %}
+                                    <button class="bg-primary text-white flex-grow py-3 px-8 rounded-md font-semibold hover:bg-red-500">Out of stock</button>
+                                {% else %}
+                                    <button class="bg-primary text-white flex-grow py-3 px-8 rounded-md font-semibold hover:bg-opacity-90 transition transform hover:scale-105">Add to Cart</button>
+                                {% endif %}
+                            </div>
+
+                            <p class="text-sm text-text-light"><span class="font-semibold">SKU:</span> WD12345</p>
+                            <p class="text-sm text-text-light"><span class="font-semibold">Category:</span> {{ single_product.category }}</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Customer Reviews Section -->
+                <div class="container mx-auto px-6 mt-16">
+                    <div class="border-t pt-10">
+                        <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+                            <h2 class="text-3xl font-serif text-text-dark mb-4 md:mb-0">Customer Reviews</h2>
+                            <a href="#" class="bg-accent text-white py-2 px-6 rounded-full font-semibold hover:bg-opacity-90 transition">Write a Review</a>
+                        </div>
+
+                        <!-- Overall Rating -->
+                        <div class="flex items-center mb-8 bg-secondary p-4 rounded-lg">
+                            <span class="text-4xl font-bold text-primary mr-4">4.8</span>
+                            <div>
+                                <div class="text-yellow-400 text-lg">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <p class="text-text-light">Based on 3 reviews</p>
+                            </div>
+                        </div>
+
+                        <!-- Individual Reviews List -->
+                        <div class="space-y-8">
+                            <!-- Review 1 -->
+                            <div class="border-b pb-6">
+                                <div class="flex items-center mb-2">
+                                    <div class="text-yellow-400">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                                <h3 class="font-semibold text-lg">Absolutely beautiful!</h3>
+                                <p class="text-text-light leading-relaxed my-2">The fabric is so soft and the print is even more vibrant in person. Fits perfectly and is very comfortable for all-day wear. Highly recommend!</p>
+                                <p class="text-sm text-gray-500">By <span class="font-medium text-text-dark">Jane D.</span> on September 28, 2025</p>
+                            </div>
+
+                            <!-- Review 2 -->
+                            <div class="border-b pb-6">
+                                <div class="flex items-center mb-2">
+                                    <div class="text-yellow-400">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i> <!-- Empty star -->
+                                    </div>
+                                </div>
+                                <h3 class="font-semibold text-lg">Very pretty dress</h3>
+                                <p class="text-text-light leading-relaxed my-2">I love this dress, it's very cute. The material is a little thinner than I expected, but it's perfect for hot summer days. Great value for the price.</p>
+                                <p class="text-sm text-gray-500">By <span class="font-medium text-text-dark">Sarah M.</span> on September 25, 2025</p>
+                            </div>
+
+                            <!-- Review 3 -->
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <div class="text-yellow-400">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                                <h3 class="font-semibold text-lg">Perfect fit and quality</h3>
+                                <p class="text-text-light leading-relaxed my-2">Received my order today and I'm so impressed with the quality and fit. It looks exactly like the pictures. Will be buying more from Family Plus!</p>
+                                <p class="text-sm text-gray-500">By <span class="font-medium text-text-dark">Emily R.</span> on September 22, 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock content %}

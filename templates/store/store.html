@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+    <main>
+        <!-- Product List Page -->
+        <section id="product_list">
+            <div class="container mx-auto px-6 py-12">
+                <!-- Breadcrumbs and Title -->
+                <div class="text-center mb-10">
+                    <p class="text-text-light"><a href="{% url 'home' %}" data-page="home" class="hover:text-primary">Home</a> / Store</p>
+                    <h1 class="text-4xl font-serif text-primary mt-2">Our Collections</h1>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-10">
+                    <!-- Filters Sidebar -->
+                    <aside class="w-full lg:w-1/4">
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h3 class="font-bold text-xl mb-4 border-b pb-2">Filters</h3>
+                            <!-- Category Filter -->
+                            <div class="mb-6">
+                                <h4 class="font-semibold mb-3">Category</h4>
+                                <div class="space-y-2">
+                                    <a href="{% url 'store' %}" class="block text-text-dark hover:text-primary">All Products</a>
+                                    {% for category in links %}
+                                    <a href="{{ category.get_url }}" class="block text-text-dark hover:text-primary">{{ category.category_name }}</a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <!-- Size Filter -->
+                            <div class="mb-6">
+                                <h4 class="font-semibold mb-3">Size</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="w-10 h-10 border rounded-md hover:bg-primary hover:text-white transition">XS</button>
+                                    <button class="w-10 h-10 border rounded-md hover:bg-primary hover:text-white transition">S</button>
+                                    <button class="w-10 h-10 border rounded-md hover:bg-primary hover:text-white transition">M</button>
+                                    <button class="w-10 h-10 border rounded-md hover:bg-primary hover:text-white transition">L</button>
+                                    <button class="w-10 h-10 border rounded-md hover:bg-primary hover:text-white transition">XL</button>
+                                </div>
+                            </div>
+                            <!-- Color Filter -->
+                            <div class="mb-6">
+                                <h4 class="font-semibold mb-3">Color</h4>
+                                <div class="flex flex-wrap gap-3">
+                                    <button class="w-8 h-8 rounded-full bg-red-500 border-2 border-transparent hover:border-text-dark"></button>
+                                    <button class="w-8 h-8 rounded-full bg-blue-500 border-2 border-transparent hover:border-text-dark"></button>
+                                    <button class="w-8 h-8 rounded-full bg-green-500 border-2 border-transparent hover:border-text-dark"></button>
+                                    <button class="w-8 h-8 rounded-full bg-yellow-400 border-2 border-transparent hover:border-text-dark"></button>
+                                    <button class="w-8 h-8 rounded-full bg-black border-2 border-transparent hover:border-text-dark"></button>
+                                    <button class="w-8 h-8 rounded-full bg-white border-2 hover:border-text-dark"></button>
+                                </div>
+                            </div>
+                             <!-- Price Filter -->
+                             <div>
+                                <h4 class="font-semibold mb-3">Price</h4>
+                                <input type="range" min="0" max="500" class="w-full">
+                                <div class="flex justify-between text-sm mt-1"><span>$0</span><span>$500</span></div>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Products Grid -->
+                    <div class="w-full lg:w-3/4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+                            <!-- Sample Product Card -->
+                            {% for product in products %}
+                            <div class="bg-white rounded-lg shadow-md overflow-hidden group text-center">
+                                <div class="relative">
+                                    <img src="{{ product.images.url }}" alt="{{ product.product_name }}" class="w-full h-auto object-cover">
+                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition flex items-center justify-center space-x-4 opacity-0 group-hover:opacity-100">
+                                        <a href="{{ product.get_url }}" data-page="product_detail" class="bg-white text-primary w-10 h-10 rounded-full flex items-center justify-center"><i class="fas fa-search"></i></a>
+                                        <button class="bg-white text-primary w-10 h-10 rounded-full flex items-center justify-center"><i class="far fa-heart"></i></button>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-semibold text-lg text-text-dark">{{ product.product_name }}</h3>
+                                    <p class="text-primary font-bold mt-1">₹{{ product.price }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="mt-12 flex justify-center items-center space-x-2">
+                            <button class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">&laquo;</button>
+                            <button class="px-4 py-2 border rounded-md bg-primary text-white">1</button>
+                            <button class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">2</button>
+                            <button class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">3</button>
+                            <button class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">&raquo;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock content %}

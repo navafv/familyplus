@@ -1,0 +1,76 @@
+{% load static %}<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Plus - Ladies & Kids Wear</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom Tailwind CSS Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Poppins', 'sans-serif'],
+                        'serif': ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        'primary': '#E7A9B1', // Soft Pink
+                        'secondary': '#F7E6E8', // Lighter Pink
+                        'accent': '#63A3A3', // Muted Teal
+                        'text-dark': '#4A4A4A',
+                        'text-light': '#888888',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Basic styles for page transitions and layout -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #4A4A4A;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F7E6E8;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E7A9B1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d198a0;
+        }
+    </style>
+</head>
+<body class="bg-secondary/30">
+	{% include 'includes/navbar.html' %}
+
+    {% block content %}{% endblock content %}
+
+	{% include 'includes/footer.html' %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+        });
+    </script>
+    {% block extra_js %}
+	{% endblock extra_js %}
+
+</body>
+</html>

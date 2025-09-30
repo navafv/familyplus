@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+    <main>
+        <!-- Home Page -->
+        <section id="home">
+            <!-- Hero Section -->
+            <div class="bg-secondary h-[60vh] md:h-[80vh] flex items-center">
+                <div class="container mx-auto px-6 text-center">
+                    <h1 class="text-4xl md:text-6xl font-serif text-primary mb-4">Dress Your Joy</h1>
+                    <p class="text-lg text-text-dark max-w-2xl mx-auto mb-8">Discover our curated collection of readymade wear for ladies and kids. Quality, comfort, and style for your entire family.</p>
+                    <a href="{% url 'store' %}" data-page="product_list" class="bg-primary text-white py-3 px-8 rounded-full font-semibold hover:bg-opacity-90 transition transform hover:scale-105">Shop Now</a>
+                </div>
+            </div>
+
+            <!-- Featured Categories -->
+            <div class="container mx-auto px-6 py-16">
+                <h2 class="text-3xl font-serif text-center mb-10">Our Collections</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="relative rounded-lg overflow-hidden group">
+                        <img src="https://placehold.co/800x600/F7E6E8/4A4A4A?text=Ladies+Wear" alt="Ladies Wear" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                            <a href="#" data-page="product_list" class="text-white text-2xl font-semibold border-2 border-white px-6 py-3 rounded-md hover:bg-white hover:text-text-dark transition">Shop Ladies</a>
+                        </div>
+                    </div>
+                    <div class="relative rounded-lg overflow-hidden group">
+                        <img src="https://placehold.co/800x600/F7E6E8/4A4A4A?text=Kids+Wear" alt="Kids Wear" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                            <a href="#" data-page="product_list" class="text-white text-2xl font-semibold border-2 border-white px-6 py-3 rounded-md hover:bg-white hover:text-text-dark transition">Shop Kids</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Arrivals -->
+            <div class="bg-white py-16">
+                <div class="container mx-auto px-6">
+                    <h2 class="text-3xl font-serif text-center mb-10">New Arrivals</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- Sample Product Card -->
+                        {% for product in products %}
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden group text-center">
+                            <div class="relative">
+                                <img src="{{ product.images.url }}" alt="{{ product.product_name }}" class="w-full h-auto object-cover">
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition flex items-center justify-center space-x-4 opacity-0 group-hover:opacity-100">
+                                    <a href="{{ product.get_url }}" data-page="product_detail" class="bg-white text-primary w-10 h-10 rounded-full flex items-center justify-center"><i class="fas fa-search"></i></a>
+                                    <button class="bg-white text-primary w-10 h-10 rounded-full flex items-center justify-center"><i class="far fa-heart"></i></button>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-lg text-text-dark">{{ product.product_name }}</h3>
+                                <p class="text-primary font-bold mt-1">₹{{ product.price }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Why Choose Us Section -->
+            <div class="container mx-auto px-6 py-16">
+                 <div class="bg-accent text-white rounded-lg p-12 text-center">
+                    <h2 class="text-3xl font-serif mb-4">Why Family Plus?</h2>
+                    <p class="max-w-3xl mx-auto mb-8">We believe in celebrating family moments with style. Our collections are crafted with love, focusing on high-quality fabrics, comfortable fits, and timeless designs that you and your little ones will adore.</p>
+                    <a href="#" data-page="about" class="bg-white text-accent py-3 px-8 rounded-full font-semibold hover:bg-opacity-90 transition transform hover:scale-105">Learn More About Us</a>
+                 </div>
+            </div>
+        </section>
+                    {% for product in products %}
+                    <div class="product-card">
+                        <a href="product.html?id=${product.id}" class="block">
+                            <div class="product-card-image-wrapper">
+                                <img src="" alt="" class="product-card-image">
+                            </div>
+                            <div class="product-card-details">
+                                <h3 class="product-card-name"></h3>
+                                <p class="product-card-price"></p>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+    </main>
+{% endblock content %}
