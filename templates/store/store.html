@@ -6,8 +6,14 @@
             <div class="container mx-auto px-6 py-12">
                 <!-- Breadcrumbs and Title -->
                 <div class="text-center mb-10">
-                    <p class="text-text-light"><a href="{% url 'home' %}" data-page="home" class="hover:text-primary">Home</a> / Store</p>
+                    <p class="text-text-light"><a href="{% url 'home' %}" data-page="home" class="hover:text-primary">Home</a> / {% if 'search' in request.path %}Search{% elif 'category' in request.path %}Category / {{ category }}{% else %}Store{% endif %}</p>
+                    {% if 'search' in request.path %}
+                    <h1 class="text-4xl font-serif text-primary mt-2">Search Result for {{ keyword }}</h1>
+                    {% elif 'category' in request.path %}
+                    <h1 class="text-4xl font-serif text-primary mt-2">{{ category }} Collections</h1>
+                    {% else %}
                     <h1 class="text-4xl font-serif text-primary mt-2">Our Collections</h1>
+                    {% endif %}
                 </div>
 
                 <div class="flex flex-col lg:flex-row gap-10">
@@ -67,7 +73,7 @@
                                     <img src="{{ product.images.url }}" alt="{{ product.product_name }}" class="w-full h-auto object-cover">
                                     <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition flex items-center justify-center space-x-4 opacity-0 group-hover:opacity-100">
                                         <a href="{{ product.get_url }}" data-page="product_detail" class="bg-white text-primary w-10 h-10 rounded-full flex items-center justify-center"><i class="fas fa-search"></i></a>
-                                        <button class="bg-white text-primary w-10 h-10 rounded-full flex items-center justify-center"><i class="far fa-heart"></i></button>
+                                        <a href="" class="bg-white text-primary w-10 h-10 rounded-full flex items-center justify-center"><i class="far fa-heart"></i></a>
                                     </div>
                                 </div>
                                 <div class="p-4">
@@ -75,17 +81,33 @@
                                     <p class="text-primary font-bold mt-1">₹{{ product.price }}</p>
                                 </div>
                             </div>
+                            {% empty %}
+                            <h3 class="col-span-3 font-semibold text-lg text-text-dark text-center mt-6">No Products{% if keyword %} Found for {{ keyword }}{% elif category %} in {{ category }}{% endif %}!</h3>
                             {% endfor %}
                         </div>
 
                         <!-- Pagination -->
+                        {% if products.has_other_pages %}
                         <div class="mt-12 flex justify-center items-center space-x-2">
-                            <button class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">&laquo;</button>
-                            <button class="px-4 py-2 border rounded-md bg-primary text-white">1</button>
-                            <button class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">2</button>
-                            <button class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">3</button>
-                            <button class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">&raquo;</button>
+                            {% if products.has_previous %}
+                                <a href="?page={{ products.previous_page_number }}" class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">&laquo;</a>
+                            {% else %}
+                                <a disabled class="px-4 py-2 border rounded-md">&laquo;</a>
+                            {% endif %}
+                            {% for i in products.paginator.page_range %}
+                                {% if products.number == i %}
+                                    <a href="" class="px-4 py-2 border rounded-md bg-primary text-white">{{ i }}</a>
+                                {% else %}
+                                    <a href="?page={{ i }}" class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">{{ i }}</a>
+                                {% endif %}
+                            {% endfor %}
+                            {% if products.has_next %}
+                                <a href="?page={{ products.next_page_number }}" class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">&raquo;</a>
+                            {% else %}
+                                <a disabled class="px-4 py-2 border rounded-md">&raquo;</a>
+                            {% endif %}
                         </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

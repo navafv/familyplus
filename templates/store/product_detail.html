@@ -5,7 +5,7 @@
         <section id="product_detail">
              <div class="bg-white py-16">
                 <div class="container mx-auto px-6">
-                    <p class="mb-6 text-text-light"><a href="#" data-page="home" class="hover:text-primary">Home</a> / <a href="#" data-page="product_list" class="hover:text-primary">Ladies</a> / Floral Print Summer Dress</p>
+                    <p class="mb-6 text-text-light"><a href="{% url 'home' %}" data-page="home" class="hover:text-primary">Home</a> / <a href="{% url 'products_by_category' single_product.category.slug %}" class="hover:text-primary">{{ single_product.category }}</a> / {{ single_product.product_name }}</p>
                     <div class="flex flex-col lg:flex-row gap-12">
                         <!-- Image Gallery -->
                         <div class="w-full lg:w-1/2">
@@ -23,41 +23,74 @@
                             <p class="text-2xl font-bold text-text-dark my-4">₹{{ single_product.price }}</p>
                             <p class="text-text-light leading-relaxed mb-6">{{ single_product.description }}</p>
                             
-                            <!-- Size Selector -->
-                            <div class="mb-6">
-                                <h3 class="font-semibold mb-2">Size:</h3>
-                                <div class="flex gap-2">
-                                    <button class="w-12 h-12 border rounded-md hover:bg-primary hover:text-white transition">XS</button>
-                                    <button class="w-12 h-12 border rounded-md bg-primary text-white transition">S</button>
-                                    <button class="w-12 h-12 border rounded-md hover:bg-primary hover:text-white transition">M</button>
-                                    <button class="w-12 h-12 border rounded-md hover:bg-primary hover:text-white transition">L</button>
-                                </div>
-                            </div>
+                            <form action="{% url 'add_cart' single_product.id %}" method="POST">
+                                {% csrf_token %}
 
-                            <!-- Color Selector -->
-                             <div class="mb-6">
-                                <h3 class="font-semibold mb-2">Color:</h3>
-                                <div class="flex gap-3">
-                                    <button class="w-8 h-8 rounded-full bg-pink-300 border-2 border-text-dark" title="Pink Floral"></button>
-                                    <button class="w-8 h-8 rounded-full bg-blue-300 border-2 border-transparent hover:border-text-dark" title="Blue Floral"></button>
-                                    <button class="w-8 h-8 rounded-full bg-yellow-200 border-2 border-transparent hover:border-text-dark" title="Yellow Floral"></button>
+                                <!-- Color Selector -->
+
+                                <div class="mb-6">
+                                    <label for="size-select-detail-1" class="font-semibold mb-2 block">Color:</label>
+                                    <select name="color" id="size-select-detail-1" class="w-full max-w-xs p-3 border rounded-md text-base text-text-dark focus:outline-none focus:ring-1 focus:ring-primary/50">
+                                        <option disabled selected>Select a color</option>
+                                        {% for i in single_product.variation_set.colors %}
+                                        <option value="{{ i.variation_value | lower }}">{{ i.variation_value | capfirst }}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
-                            </div>
-                            
-                            <!-- Quantity and Add to Cart -->
-                            <div class="flex items-center gap-4 mb-8">
-                                <div class="flex items-center border rounded-md">
-                                    <button class="px-4 py-2 text-lg">-</button>
-                                    <span class="px-4 py-2 text-lg">1</span>
-                                    <button class="px-4 py-2 text-lg">+</button>
+
+                                {% comment %} <div class="mb-6">
+                                    <h3 class="font-semibold mb-2">Color:</h3>
+                                    <div class="flex gap-3">
+                                        <button disabled class="w-8 h-8 rounded-full bg-pink-300 border-2 border-text-dark" title="Pink Floral"></button>
+                                        <button disabled class="w-8 h-8 rounded-full bg-blue-300 border-2 border-transparent hover:border-text-dark" title="Blue Floral"></button>
+                                        <button disabled class="w-8 h-8 rounded-full bg-yellow-200 border-2 border-transparent hover:border-text-dark" title="Yellow Floral"></button>
+                                    </div>
+                                </div> {% endcomment %}
+
+                                <!-- Size Selector -->
+
+                                <div class="mb-6">
+                                    <label for="size-select-detail-1" class="font-semibold mb-2 block">Size:</label>
+                                    <select name="size" id="size-select-detail-1" class="w-full max-w-xs p-3 border rounded-md text-base text-text-dark focus:outline-none focus:ring-1 focus:ring-primary/50">
+                                        <option disabled selected>Select a size</option>
+                                        {% for i in single_product.variation_set.sizes %}
+                                        <option value="{{ i.variation_value | lower }}">{{ i.variation_value | capfirst }}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
-                                
-                                {% if single_product.stock <= 0 %}
-                                    <button class="bg-primary text-white flex-grow py-3 px-8 rounded-md font-semibold hover:bg-red-500">Out of stock</button>
-                                {% else %}
-                                    <button class="bg-primary text-white flex-grow py-3 px-8 rounded-md font-semibold hover:bg-opacity-90 transition transform hover:scale-105">Add to Cart</button>
-                                {% endif %}
-                            </div>
+
+                                {% comment %} <div class="mb-6">
+                                    <h3 class="font-semibold mb-2">Size:</h3>
+                                    <div class="flex gap-2">
+                                        <button disabled class="w-12 h-12 border rounded-md hover:bg-primary hover:text-white transition">XS</button>
+                                        <button disabled class="w-12 h-12 border rounded-md bg-primary text-white transition">S</button>
+                                        <button disabled class="w-12 h-12 border rounded-md hover:bg-primary hover:text-white transition">M</button>
+                                        <button disabled class="w-12 h-12 border rounded-md hover:bg-primary hover:text-white transition">L</button>
+                                    </div>
+                                </div> {% endcomment %}
+
+                                <!-- Quantity and Add to Cart -->
+
+                                <div class="flex items-center gap-4 mb-8">
+                                    {% comment %} <div class="flex items-center border rounded-md">
+                                        <button class="px-4 py-2 text-lg">-</button>
+                                        <span class="px-4 py-2 text-lg">1</span>
+                                        <button class="px-4 py-2 text-lg">+</button>
+                                    </div> {% endcomment %}
+                                    
+                                    {% if single_product.stock <= 0 %}
+                                        <button disabled class="bg-primary text-white flex-grow py-3 px-8 rounded-md font-semibold hover:bg-red-500 transition transform">Out of stock</button>
+                                    {% else %}
+                                        {% comment %} {% if in_cart %}
+                                        <button disabled class="bg-green-600 text-white flex-grow py-3 px-8 rounded-md font-semibold hover:bg-opacity-90 transition transform">Added to Cart</button>
+                                        <a href="{% url 'cart' %}" class="bg-primary text-white flex-grow py-3 px-8 rounded-md font-semibold hover:bg-opacity-90 transition transform">View Cart</a>
+                                        {% else %}
+                                        <button type="submit" class="bg-primary text-white flex-grow py-3 px-8 rounded-md font-semibold hover:bg-opacity-90 transition transform hover:scale-105">Add to Cart</button>
+                                        {% endif %} {% endcomment %}
+                                        <button type="submit" class="bg-primary text-white flex-grow py-3 px-8 rounded-md font-semibold hover:bg-opacity-90 transition transform hover:scale-105">Add to Cart</button>
+                                    {% endif %}
+                                </div>
+                            </form>
 
                             <p class="text-sm text-text-light"><span class="font-semibold">SKU:</span> WD12345</p>
                             <p class="text-sm text-text-light"><span class="font-semibold">Category:</span> {{ single_product.category }}</p>

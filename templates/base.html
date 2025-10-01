@@ -63,9 +63,23 @@
         document.addEventListener('DOMContentLoaded', function() {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
+            const mobileSearchButton = document.getElementById('mobile-search-button');
+            const mobileSearchOverlay = document.getElementById('mobile-search-overlay');
+            const closeSearchButton = document.getElementById('close-search-button');
             
             mobileMenuButton.addEventListener('click', function() {
                 mobileMenu.classList.toggle('hidden');
+            });
+
+            // Event listeners for mobile search
+            mobileSearchButton.addEventListener('click', function() {
+                mobileSearchOverlay.classList.remove('hidden');
+                mobileSearchOverlay.querySelector('input').focus();
+                mobileMenu.classList.add('hidden'); // Hide menu if search is opened
+            });
+
+            closeSearchButton.addEventListener('click', function() {
+                mobileSearchOverlay.classList.add('hidden');
             });
         });
     </script>
