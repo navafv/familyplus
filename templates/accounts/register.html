@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <main>
+        <!-- Register Page -->
+        <section id="register" class="page">
+             <div class="flex items-center justify-center py-20 px-6">
+                <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
+                    <div class="text-center mb-8">
+                        <h1 class="text-3xl font-serif text-primary">Create Account</h1>
+                        <p class="text-text-light">Join the Family Plus community!</p>
+                    </div>
+                    <form action="{% url 'register' %}" method="POST">
+                        {% csrf_token %}
+                        {% comment %} {{ form.email.errors }}
+                        {{ form.non_field_errors }} {% endcomment %}
+                        {% for field in form %}
+                        <div class="mb-4">
+                            <label class="block mb-1">{{ field.label }}<span class="text-red-600">{% if field.field.required %}*{% endif %}</span></label>
+                            {{ field }}
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="block text-center bg-primary text-white w-full py-3 rounded-md font-semibold hover:bg-opacity-90 transition">Register</button>
+                    </form>
+                    <div class="text-center mt-6">
+                        <p class="text-sm text-text-light">Already have an account? <a href="{% url 'login' %}" data-page="login" class="font-semibold text-primary hover:underline">Log In</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock content %}
+
+{% block extra_js %}
+    {% if form.email.errors or form.non_field_errors %}
+        <script>
+            // Ensure this script runs after the main DOMContentLoaded event
+            // or place it at the very end of your body tag.
+            window.addEventListener('load', function() {
+                // The message.tags can be 'success', 'error', 'info', 'warning'
+                var messageType = 'error';
+                if (messageType === 'warning') {
+                    messageType = 'info'; // Map Django's 'warning' to our 'info' style
+                }
+                
+                // Capitalize the first letter for a default title
+                var title = messageType.charAt(0).toUpperCase() + messageType.slice(1) + '!';
+
+                showMessage(messageType, title, '{{ form.email.errors }}{% if form.email.errors and form.non_field_errors %} <p>&nbsp;and&nbsp;</p> {% endif %}{{ form.non_field_errors }}');
+            });
+        </script>
+    {% endif %}
+{% endblock extra_js %}

@@ -50,9 +50,40 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #d198a0;
         }
+        /* Message Banner Transitions */
+        .message-banner-enter {
+            opacity: 0;
+            transform: translateY(-100%);
+        }
+        .message-banner-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 300ms, transform 300ms ease-out;
+        }
+        .message-banner-exit {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .message-banner-exit-active {
+            opacity: 0;
+            transform: translateY(-100%);
+            transition: opacity 300ms, transform 300ms ease-in;
+        }
+        /* Modal Styles */
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+        .modal.hidden .modal-content {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body class="bg-secondary/30">
+    
+	{% include 'includes/alerts.html' %}
 	{% include 'includes/navbar.html' %}
 
     {% block content %}{% endblock content %}
@@ -60,6 +91,72 @@
 	{% include 'includes/footer.html' %}
 
     <script>
+        // Message Banner Function
+        function showMessage(type = 'info', title, message, duration = 5000) {
+            const container = document.getElementById('notification-container');
+            if (!container) return;
+
+            const banner = document.createElement('div');
+            
+            let bgColor, textColor, iconClass;
+
+            switch (type) {
+                case 'success':
+                    bgColor = 'bg-accent';
+                    textColor = 'text-white';
+                    iconClass = 'fa-check-circle';
+                    break;
+                case 'error':
+                    bgColor = 'bg-red-500';
+                    textColor = 'text-white';
+                    iconClass = 'fa-times-circle';
+                    break;
+                case 'info':
+                default:
+                    bgColor = 'bg-blue-500';
+                    textColor = 'text-white';
+                    iconClass = 'fa-info-circle';
+                    break;
+            }
+
+            banner.className = `w-full max-w-4xl mx-auto ${bgColor} ${textColor} rounded-lg shadow-lg flex items-center justify-between p-4 mb-2 message-banner-enter pointer-events-auto`;
+            
+            banner.innerHTML = `
+                <div class="flex items-center">
+                    <span class="text-xl mr-3"><i class="fas ${iconClass}"></i></span>
+                    <p class="text-sm"><span class="font-bold mr-1">${title}</span> ${message}</p>
+                </div>
+                <button class="text-xl opacity-70 hover:opacity-100 focus:outline-none">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            container.appendChild(banner);
+
+            requestAnimationFrame(() => {
+                banner.classList.add('message-banner-enter-active');
+            });
+
+            const closeButton = banner.querySelector('button');
+            
+            const removeBanner = () => {
+                banner.classList.remove('message-banner-enter-active');
+                banner.classList.add('message-banner-exit-active');
+                banner.addEventListener('transitionend', () => {
+                    banner.remove();
+                });
+            };
+            
+            closeButton.addEventListener('click', removeBanner);
+
+            // use custom duration
+            if (duration > 0) {
+                setTimeout(removeBanner, duration);
+            }
+        }
+
+
+        // Navigation and UI Script
         document.addEventListener('DOMContentLoaded', function() {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
@@ -81,8 +178,80 @@
             closeSearchButton.addEventListener('click', function() {
                 mobileSearchOverlay.classList.add('hidden');
             });
+
+            // Review Modal Logic
+            const reviewModal = document.getElementById('review-modal');
+            const openReviewModalBtn = document.getElementById('open-review-modal-btn');
+            const closeReviewModalBtn = document.getElementById('close-review-modal');
+            const starRatingContainer = document.getElementById('star-rating');
+            const ratingValueInput = document.getElementById('rating-value');
+            const stars = starRatingContainer.querySelectorAll('.fa-star');
+
+            if (reviewModal && openReviewModalBtn && closeReviewModalBtn) {
+                openReviewModalBtn.addEventListener('click', () => {
+                    reviewModal.classList.remove('hidden');
+                    reviewModal.classList.add('flex');
+                });
+
+                const closeModal = () => {
+                    reviewModal.classList.add('hidden');
+                    reviewModal.classList.remove('flex');
+                };
+
+                closeReviewModalBtn.addEventListener('click', closeModal);
+                reviewModal.addEventListener('click', (e) => {
+                    if (e.target === reviewModal) {
+                        closeModal();
+                    }
+                });
+                
+                // Star Rating Interaction
+                stars.forEach(star => {
+                    star.addEventListener('mouseover', () => {
+                        const rating = star.dataset.value;
+                        stars.forEach(s => {
+                            s.classList.toggle('text-yellow-400', s.dataset.value <= rating);
+                            s.classList.toggle('text-gray-300', s.dataset.value > rating);
+                        });
+                    });
+
+                    star.addEventListener('mouseout', () => {
+                        const currentRating = ratingValueInput.value;
+                        stars.forEach(s => {
+                            s.classList.toggle('text-yellow-400', s.dataset.value <= currentRating);
+                            s.classList.toggle('text-gray-300', s.dataset.value > currentRating);
+                        });
+                    });
+
+                    star.addEventListener('click', () => {
+                        ratingValueInput.value = star.dataset.value;
+                    });
+                });
+            }
         });
     </script>
+
+    {% if messages %}
+        <script>
+            // Ensure this script runs after the main DOMContentLoaded event
+            // or place it at the very end of your body tag.
+            window.addEventListener('load', function() {
+                {% for message in messages %}
+                    // The message.tags can be 'success', 'error', 'info', 'warning'
+                    var messageType = '{{ message.tags }}';
+                    if (messageType === 'warning') {
+                        messageType = 'info'; // Map Django's 'warning' to our 'info' style
+                    }
+                    
+                    // Capitalize the first letter for a default title
+                    var title = messageType.charAt(0).toUpperCase() + messageType.slice(1) + '!';
+
+                    showMessage(messageType, title, '{{ message|escapejs }}');
+                {% endfor %}
+            });
+        </script>
+    {% endif %}
+    
     {% block extra_js %}
 	{% endblock extra_js %}
 

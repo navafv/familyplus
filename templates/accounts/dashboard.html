@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <main>
+        <!-- Dashboard Page -->
+        <section id="dashboard" class="page">
+            <div class="container mx-auto px-6 py-16">
+                 <h1 class="text-4xl font-serif text-primary mb-8">My Account</h1>
+                 <div class="flex flex-col lg:flex-row gap-10">
+                    <aside class="w-full lg:w-1/4">
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <a href="#" class="block font-semibold bg-secondary text-primary p-3 rounded-md mb-2">My Orders</a>
+                            <a href="#" class="block font-semibold text-text-dark hover:bg-secondary p-3 rounded-md mb-2">My Profile</a>
+                            <a href="#" class="block font-semibold text-text-dark hover:bg-secondary p-3 rounded-md mb-2">Addresses</a>
+                            <a href="{% url 'logout' %}" data-page="home" class="block font-semibold text-text-dark hover:bg-secondary p-3 rounded-md">Logout</a>
+                        </div>
+                    </aside>
+                    <div class="w-full lg:w-3/4 bg-white p-8 rounded-lg shadow-md">
+                        <h2 class="text-2xl font-semibold mb-6">Recent Orders</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead>
+                                    <tr class="border-b">
+                                        <th class="py-2">Order ID</th>
+                                        <th class="py-2">Date</th>
+                                        <th class="py-2">Status</th>
+                                        <th class="py-2">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b">
+                                        <td class="py-4">#FP12345678</td>
+                                        <td class="py-4">Oct 28, 2023</td>
+                                        <td class="py-4"><span class="bg-green-200 text-green-800 px-2 py-1 rounded-full text-sm">Delivered</span></td>
+                                        <td class="py-4">$94.97</td>
+                                    </tr>
+                                    <tr class="border-b">
+                                        <td class="py-4">#FP12345670</td>
+                                        <td class="py-4">Sep 15, 2023</td>
+                                        <td class="py-4"><span class="bg-green-200 text-green-800 px-2 py-1 rounded-full text-sm">Delivered</span></td>
+                                        <td class="py-4">$120.50</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+        </section>
+    </main>
+{% endblock content %}
