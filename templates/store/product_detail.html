@@ -97,82 +97,119 @@
                         </div>
                     </div>
                 </div>
-                <!-- Customer Reviews Section -->
-                <div class="container mx-auto px-6 mt-16">
-                    <div class="border-t pt-10">
-                        <div class="flex flex-col md:flex-row justify-between items-center mb-8">
-                            <h2 class="text-3xl font-serif text-text-dark mb-4 md:mb-0">Customer Reviews</h2>
-                            <a href="#" class="bg-accent text-white py-2 px-6 rounded-full font-semibold hover:bg-opacity-90 transition">Write a Review</a>
-                        </div>
-
-                        <!-- Overall Rating -->
-                        <div class="flex items-center mb-8 bg-secondary p-4 rounded-lg">
-                            <span class="text-4xl font-bold text-primary mr-4">4.8</span>
-                            <div>
+            </div>
+            <!-- Customer Reviews Section -->
+            <div id="customer-reviews-section" class="py-16 bg-secondary/30">
+                <div class="container mx-auto px-6">
+                    <h2 class="text-3xl font-serif text-center mb-10">What Our Customers Say</h2>
+                    <div class="max-w-4xl mx-auto">
+                        <!-- Overall Rating Summary -->
+                        <div class="bg-white p-6 rounded-lg shadow-md mb-8 flex items-center gap-6">
+                            {% if single_product.countReview == 0 %}
+                            {% if user.is_authenticated %}
+                                {% if orderproduct %}
+                                <button id="open-review-modal-btn" class="w-full bg-accent text-white py-3 rounded-md font-semibold hover:bg-opacity-90 transition">Write a Review</button>
+                                {% else %}
+                                <button class="w-full bg-red-600 text-white py-3 rounded-md font-semibold hover:bg-opacity-90 transition">You must purchase this product to post a review</button>
+                                {% endif %}
+                                {% else %}
+                                <button class="w-full bg-red-600 text-white py-3 rounded-md font-semibold hover:bg-opacity-90 transition">You must be logged in to post a review <a href="{% url 'login' %}">Login now</a></button>
+                                {% endif %}
+                            {% else %}
+                            <div class="text-center">
+                                <p class="text-5xl font-bold text-primary">{{ single_product.averageReview }}</p>
                                 <div class="text-yellow-400 text-lg">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
+                                    <i class="{% if single_product.averageReview < 0.5 %}far fa-star{% elif single_product.averageReview >= 0.5 and single_product.averageReview < 1 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}"></i>
+                                    <i class="{% if single_product.averageReview < 1.5 %}far fa-star{% elif single_product.averageReview >= 1.5 and single_product.averageReview < 2 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}"></i>
+                                    <i class="{% if single_product.averageReview < 2.5 %}far fa-star{% elif single_product.averageReview >= 2.5 and single_product.averageReview < 3 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}"></i>
+                                    <i class="{% if single_product.averageReview < 3.5 %}far fa-star{% elif single_product.averageReview >= 3.5 and single_product.averageReview < 4 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}"></i>
+                                    <i class="{% if single_product.averageReview < 4.5 %}far fa-star{% elif single_product.averageReview >= 4.5 and single_product.averageReview < 5 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}"></i>
                                 </div>
-                                <p class="text-text-light">Based on 3 reviews</p>
+                                <p class="text-text-light text-sm mt-1">Based on {{ single_product.countReview }} Review{% if single_product.countReview != 1 %}s{% endif %}</p>
                             </div>
+                            <div class="flex-grow">
+                                {% if user.is_authenticated %}
+                                {% if orderproduct %}
+                                <button id="open-review-modal-btn" class="w-full bg-accent text-white py-3 rounded-md font-semibold hover:bg-opacity-90 transition">Write a Review</button>
+                                {% else %}
+                                <button class="w-full bg-red-600 text-white py-3 rounded-md font-semibold hover:bg-opacity-90 transition">You must purchase this product to post a review</button>
+                                {% endif %}
+                                {% else %}
+                                <button class="w-full bg-red-600 text-white py-3 rounded-md font-semibold hover:bg-opacity-90 transition">You must be logged in to post a review <a href="{% url 'login' %}">Login now</a></button>
+                                {% endif %}
+                            </div>
+                            {% endif %}
                         </div>
 
-                        <!-- Individual Reviews List -->
-                        <div class="space-y-8">
-                            <!-- Review 1 -->
-                            <div class="border-b pb-6">
-                                <div class="flex items-center mb-2">
-                                    <div class="text-yellow-400">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
+                        <!-- Individual Reviews -->
+                        <div class="space-y-6">
+                            <!-- Review Loop -->
+                             {% for review in reviews %}
+                             <div class="bg-white p-6 rounded-lg shadow-md">
+                                 <div class="flex items-center justify-between mb-2">
+                                     <h3 class="font-semibold text-lg text-text-dark">{{ review.subject }}</h3>
+                                     <div class="text-yellow-400">
+                                        <i class="{% if review.rating >= 1 %}fas fa-star{% elif review.rating >= 0.5 %}fa fa-star-half-alt{% else %}far fa-star{% endif %}" aria-hidden="true"></i>
+                                        <i class="{% if review.rating >= 2 %}fas fa-star{% elif review.rating >= 1.5 %}fa fa-star-half-alt{% else %}far fa-star{% endif %}" aria-hidden="true"></i>
+                                        <i class="{% if review.rating >= 3 %}fas fa-star{% elif review.rating >= 2.5 %}fa fa-star-half-alt{% else %}far fa-star{% endif %}" aria-hidden="true"></i>
+                                        <i class="{% if review.rating >= 4 %}fas fa-star{% elif review.rating >= 3.5 %}fa fa-star-half-alt{% else %}far fa-star{% endif %}" aria-hidden="true"></i>
+                                        <i class="{% if review.rating >= 5 %}fas fa-star{% elif review.rating >= 4.5 %}fa fa-star-half-alt{% else %}far fa-star{% endif %}" aria-hidden="true"></i>
                                     </div>
                                 </div>
-                                <h3 class="font-semibold text-lg">Absolutely beautiful!</h3>
-                                <p class="text-text-light leading-relaxed my-2">The fabric is so soft and the print is even more vibrant in person. Fits perfectly and is very comfortable for all-day wear. Highly recommend!</p>
-                                <p class="text-sm text-gray-500">By <span class="font-medium text-text-dark">Jane D.</span> on September 28, 2025</p>
+                                <p class="text-sm text-text-light mb-3">by <span class="font-medium text-text-dark">{{ review.user.full_name }}</span> on {{ review.updated_at }}</p>
+                                <p class="text-text-dark leading-relaxed">{{ review.review }}</p>
                             </div>
-
-                            <!-- Review 2 -->
-                            <div class="border-b pb-6">
-                                <div class="flex items-center mb-2">
-                                    <div class="text-yellow-400">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="far fa-star"></i> <!-- Empty star -->
-                                    </div>
-                                </div>
-                                <h3 class="font-semibold text-lg">Very pretty dress</h3>
-                                <p class="text-text-light leading-relaxed my-2">I love this dress, it's very cute. The material is a little thinner than I expected, but it's perfect for hot summer days. Great value for the price.</p>
-                                <p class="text-sm text-gray-500">By <span class="font-medium text-text-dark">Sarah M.</span> on September 25, 2025</p>
-                            </div>
-
-                            <!-- Review 3 -->
-                            <div>
-                                <div class="flex items-center mb-2">
-                                    <div class="text-yellow-400">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                    </div>
-                                </div>
-                                <h3 class="font-semibold text-lg">Perfect fit and quality</h3>
-                                <p class="text-text-light leading-relaxed my-2">Received my order today and I'm so impressed with the quality and fit. It looks exactly like the pictures. Will be buying more from Family Plus!</p>
-                                <p class="text-sm text-gray-500">By <span class="font-medium text-text-dark">Emily R.</span> on September 22, 2025</p>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
             </div>
         </section>
     </main>
+
+    <!-- Review Form Modal -->
+    <div id="review-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-[100] hidden items-center justify-center p-4">
+        <div id="review-modal-content" class="modal-content bg-white rounded-lg shadow-xl w-full max-w-lg p-6 relative transform transition-transform">
+            <button id="close-review-modal" class="absolute top-4 right-4 text-2xl text-text-light hover:text-text-dark">&times;</button>
+            <h2 class="text-2xl font-serif text-primary mb-6">Write a Review</h2>
+            <form action="{% url 'submit_review' single_product.id %}" method="POST">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label class="font-semibold mb-2 block">Your Rating</label>
+                    <div class="flex items-center text-3xl text-gray-300" id="star-rating">
+                        <i class="fas fa-star cursor-pointer" data-value="1"></i>
+                        <i class="fas fa-star cursor-pointer" data-value="2"></i>
+                        <i class="fas fa-star cursor-pointer" data-value="3"></i>
+                        <i class="fas fa-star cursor-pointer" data-value="4"></i>
+                        <i class="fas fa-star cursor-pointer" data-value="5"></i>
+                    </div>
+                    <input type="hidden" name="rating" id="rating-value" value="0">
+
+                    <!-- <input type="radio" name="rating" id="rating10" value="5" required /><label for="rating10" title="5"></label>
+                    <input type="radio" name="rating" id="rating9" value="4.5" required /><label for="rating9" title="4.5" class="half"></label>
+                    <input type="radio" name="rating" id="rating8" value="4" required /><label for="rating8" title="4"></label>
+                    <input type="radio" name="rating" id="rating7" value="3.5" required /><label for="rating7" title="3.5" class="half"></label>
+                    <input type="radio" name="rating" id="rating6" value="3" required /><label for="rating6" title="3"></label>
+                    <input type="radio" name="rating" id="rating5" value="2.5" required /><label for="rating5" title="2.5" class="half"></label>
+                    <input type="radio" name="rating" id="rating4" value="2" required /><label for="rating4" title="2"></label>
+                    <input type="radio" name="rating" id="rating3" value="1.5" required /><label for="rating3" title="1.5" class="half"></label>
+                    <input type="radio" name="rating" id="rating2" value="1" required /><label for="rating2" title="1"></label>
+                    <input type="radio" name="rating" id="rating1" value="0.5" required /><label for="rating1" title="0.5" class="half"></label> -->
+                </div>
+                <div class="mb-4">
+                    <label for="review-title" class="font-semibold mb-1 block">Review Title</label>
+                    <input type="text" name="subject" id="review-title" placeholder="e.g. Absolutely love it!" class="w-full p-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/50">
+                </div>
+                <div class="mb-6">
+                    <label for="review-body" class="font-semibold mb-1 block">Your Review</label>
+                    <textarea name="review" id="review-body" rows="5" placeholder="Tell us more about your experience..." class="w-full p-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/50"></textarea>
+                </div>
+                <button type="submit" class="bg-primary text-white w-full py-3 rounded-md font-semibold hover:bg-opacity-90 transition">Submit Review</button>
+            </form>
+        </div>
+    </div>
 {% endblock content %}
+
+{% block extra_js %}
+
+{% endblock extra_js %}
