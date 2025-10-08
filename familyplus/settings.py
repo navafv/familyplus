@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-ka17vcw8o)&-*w0$c!&23lf=ns_)rahf4hwmoo^4k#ij4j4v@#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts',
     'store',
     'carts',
+    'orders',
 ]
 
 MIDDLEWARE = [
@@ -148,3 +149,11 @@ EMAIL_PORT = '587'
 EMAIL_HOST_USER = 'navafkcp@gmail.com'
 EMAIL_HOST_PASSWORD = 'qtxk dsau oyne vaan'
 EMAIL_USE_TLS = True
+
+
+# PayPal Settings
+PAYPAL_API_BASE = "https://api-m.sandbox.paypal.com"  # Sandbox
+# PAYPAL_API_BASE = "https://api-m.paypal.com"  # Production
+PAYPAL_CLIENT_ID = "Abt9wXaTBDjH38OQWzhrF2kWHrlsTNbPF7ixdxdU8GNqDDNWhbUpSogreBuXBr-0yylp8-dIi3tgRmyr"
+PAYPAL_CLIENT_SECRET = "EPYze94RaoLmcBjNmtAEWyOw_UYcNFmuXNdJ2hihqF7GhJLx7dsGtzNlsritSjRUwm4qfPHJqHgm7bUO"
+PAYPAL_CURRENCY = "USD"  # Change to "INR" if your PayPal business account supports it

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+    <main>
+        <!-- Payment Page -->
+        <section id="cart" class="page">
+             <div class="container mx-auto px-6 py-16">
+                <h1 class="text-4xl font-serif text-center text-primary mb-10">Review Your Order and Make Payment</h1>
+                <div class="flex flex-col lg:flex-row gap-10">
+                    <div class="w-full lg:w-2/3 bg-white p-4 rounded-lg shadow-md">
+                        <div class="bg-white p-2 rounded-lg">
+                            <h3 class="font-semibold text-lg text-text-dark mb-2">Billing Address</h3>
+                            <p class="text-text-dark leading-relaxed">{{ order.full_name }}</p>
+                            <p class="text-text-dark leading-relaxed">{{ order.full_address }}</p>
+                            <p class="text-text-dark leading-relaxed">{{ order.city }}, {{ order.state }}, {{ order.country }}</p>
+                            <p class="text-text-dark leading-relaxed">{{ order.email }}</p>
+                            <p class="text-text-dark leading-relaxed">{{ order.phone }}</p>
+                            {% if order.order_note %}
+                                <p class="text-text-dark leading-relaxed"><b>Order Note : </b>{{ order.order_note }}</p>
+                            {% endif %}
+                        </div>
+                        <hr>
+                        <div class="bg-white p-2 rounded-lg">
+                            <h3 class="font-semibold text-lg text-text-dark mb-2">Payment Method</h3>
+                            <p class="text-text-dark leading-relaxed">Cash On Delivery</p>
+                        </div>
+                        <hr>
+                        <div class="bg-white p-2 rounded-lg">
+                            <h3 class="font-semibold text-lg text-text-dark mb-2">Review Products</h3>
+                            <!-- Cart Item Header -->
+                            <div class="flex items-center justify-between border-b last:border-b-0 pb-4 mb-4">
+                                <p class="font-bold w-20 text-right">Product</p>
+                                <div class="flex">
+                                    <p class="font-bold w-20 text-right">Quantity</p>
+                                    <p class="font-bold w-20 text-right">Price</p>
+                                </div>
+                            </div>
+                            <!-- Cart Item loop -->
+                            {% for cart_item in cart_items %}
+                            <div class="flex items-center border-b last:border-b-0 pb-4 mb-4">
+                                <img src="{{ cart_item.product.images.url }}" alt="{{ cart_item.product.product_name }}" class="w-24 h-30 object-cover rounded-md">
+                                <div class="flex-grow ml-4">
+                                    <a href="{{ cart_item.product.get_url }}" class="font-semibold text-lg">{{ cart_item.product.product_name }}</a>
+                                    {% if cart_item.variations.all %}
+                                        {% for item in cart_item.variations.all %}
+                                            <p class="text-sm text-text-light">{{ item.variation_category | capfirst }}: {{ item.variation_value | capfirst }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <p class="text-primary font-bold mt-2">₹{{ cart_item.product.price }}</p>
+                                </div>
+                                <div class="flex">
+                                    <p class="font-bold w-20 text-right">{{ cart_item.quantity }}</p>
+                                    <p class="font-bold w-20 text-right">₹{{ cart_item.sub_total }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-1/3">
+                         <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h2 class="text-2xl font-semibold border-b pb-3 mb-4">Order Summary</h2>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-text-light">Subtotal</span>
+                                <span>₹{{ total }}</span>
+                            </div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-text-light">Shipping</span>
+                                <span>₹{{ shipping }}</span>
+                            </div>
+                            <div class="flex justify-between font-bold text-xl border-t pt-3 mt-3">
+                                <span>Total</span>
+                                <span>₹{{ grand_total }}</span>
+                            </div>
+                            <form action="{% url 'payments' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="text" name="order_id" value="{{ order.order_number }}" hidden>
+                                <button type="submit" class="block text-center bg-primary text-white w-full py-3 mt-6 rounded-md font-semibold hover:bg-opacity-90 transition">Place Order</button>
+                            </form>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock content %}
