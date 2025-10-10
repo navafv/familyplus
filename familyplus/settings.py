@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ka17vcw8o)&-*w0$c!&23lf=ns_)rahf4hwmoo^4k#ij4j4v@#'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = ['*']
 
@@ -137,23 +138,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-# from django.contrib.messages import constants as messages
-# MESSAGE_TAGS = {
-#     messages.ERROR: 'danger',
-# }
-
 # SMTP CONFIGURATION
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = '587'
-EMAIL_HOST_USER = 'navafkcp@gmail.com'
-EMAIL_HOST_PASSWORD = 'qtxk dsau oyne vaan'
-EMAIL_USE_TLS = True
-
-
-# PayPal Settings
-PAYPAL_API_BASE = "https://api-m.sandbox.paypal.com"  # Sandbox
-# PAYPAL_API_BASE = "https://api-m.paypal.com"  # Production
-PAYPAL_CLIENT_ID = "Abt9wXaTBDjH38OQWzhrF2kWHrlsTNbPF7ixdxdU8GNqDDNWhbUpSogreBuXBr-0yylp8-dIi3tgRmyr"
-PAYPAL_CLIENT_SECRET = "EPYze94RaoLmcBjNmtAEWyOw_UYcNFmuXNdJ2hihqF7GhJLx7dsGtzNlsritSjRUwm4qfPHJqHgm7bUO"
-PAYPAL_CURRENCY = "USD"  # Change to "INR" if your PayPal business account supports it
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
