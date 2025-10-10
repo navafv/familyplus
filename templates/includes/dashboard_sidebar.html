@@ -1,0 +1,9 @@
+<aside class="w-full lg:w-1/4">
+    <div class="bg-white p-4 rounded-lg shadow-md">
+        <a href="{% url 'dashboard' %}" class="block font-semibold {% if request.path == '/accounts/' %}bg-secondary text-primary{% else %}text-text-dark hover:bg-secondary{% endif %} p-3 rounded-md mb-2">Dashboard</a>
+        <a href="{% url 'my_orders' %}" class="block font-semibold {% if 'my_orders' in request.path %}bg-secondary text-primary{% else %}text-text-dark hover:bg-secondary{% endif %} p-3 rounded-md mb-2">My Orders</a>
+        <a href="{% url 'edit_profile' %}" data-dashboard-page="profile" class="block font-semibold {% if 'edit_profile' in request.path %}bg-secondary text-primary{% else %}text-text-dark hover:bg-secondary{% endif %} p-3 rounded-md mb-2">Edit Profile</a>
+        <a href="{% url 'change_password' %}" data-dashboard-page="password" class="block font-semibold {% if 'change_password' in request.path %}bg-secondary text-primary{% else %}text-text-dark hover:bg-secondary{% endif %} p-3 rounded-md mb-2">Change Password</a>
+        <a href="{% url 'logout' %}" data-page="home" class="block font-semibold text-text-dark hover:bg-secondary p-3 rounded-md">Logout</a>
+    </div>
+</aside>

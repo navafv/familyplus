@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <main>
+        <!-- Dashboard Page -->
+        <section id="dashboard" class="page">
+            <div class="container mx-auto px-6 py-16">
+                 <h1 class="text-4xl font-serif text-primary mb-8">My Account</h1>
+                 <div class="flex flex-col lg:flex-row gap-10">
+                    {% include 'includes/dashboard_sidebar.html' %}
+                    <div class="w-full lg:w-3/4">
+                        <!-- My Orders -->
+                        <div class="bg-white p-8 rounded-lg shadow-md">
+                            <h2 class="text-2xl font-semibold mb-6">Recent Orders</h2>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left">
+                                    <thead>
+                                        <tr class="border-b">
+                                            <th class="py-2 px-4">Order ID</th>
+                                            <th class="py-2 px-4">Billing Name</th>
+                                            <th class="py-2 px-4">Phone</th>
+                                            <th class="py-2 px-4">Order Total</th>
+                                            <th class="py-2 px-4">Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for order in orders %}
+                                        <tr class="border-b">
+                                            <td class="py-4 px-4"><a href="{% url 'order_detail' order.order_number %}" class="text-primary hover:underline font-semibold">{{ order.order_number }}</a></td>
+                                            <td class="py-4 px-4">{{ order.full_name }}</td>
+                                            <td class="py-4 px-4">{{ order.phone }}</td>
+                                            <td class="py-4 px-4">₹{{ order.order_total }}</td>
+                                            <td class="py-4 px-4">{{ order.created_at }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+        </section>
+    </main>
+{% endblock content %}

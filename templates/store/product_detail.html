@@ -9,12 +9,14 @@
                     <div class="flex flex-col lg:flex-row gap-12">
                         <!-- Image Gallery -->
                         <div class="w-full lg:w-1/2">
-                            <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" class="w-full rounded-lg shadow-md mb-4">
-                            <div class="grid grid-cols-4 gap-4">
-                                <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" class="rounded-md cursor-pointer border-2 border-primary">
-                                <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" class="rounded-md cursor-pointer border-2 border-transparent hover:border-primary">
-                                <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" class="rounded-md cursor-pointer border-2 border-transparent hover:border-primary">
-                                <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" class="rounded-md cursor-pointer border-2 border-transparent hover:border-primary">
+                            <div class="mainImage">
+                                <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" class="w-full rounded-lg shadow-md mb-4">
+                            </div>
+                            <div class="grid grid-cols-4 gap-4 thumb">
+                                <a href="{{ single_product.images.url }}" target="mainImage"><img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" class="rounded-md cursor-pointer border-2 border-primary"></a>
+                                {% for image in product_gallery %}
+                                <a href="{{ image.image.url }}" target="mainImage"><img src="{{ image.image.url }}" alt="{{ single_product.product_name }}" class="rounded-md cursor-pointer border-2"></a>
+                                {% endfor %}
                             </div>
                         </div>
                         <!-- Product Info -->
@@ -27,7 +29,7 @@
                                 {% csrf_token %}
 
                                 <!-- Color Selector -->
-
+                                {% if single_product.variation_set.colors %}
                                 <div class="mb-6">
                                     <label for="size-select-detail-1" class="font-semibold mb-2 block">Color:</label>
                                     <select name="color" id="size-select-detail-1" class="w-full max-w-xs p-3 border rounded-md text-base text-text-dark focus:outline-none focus:ring-1 focus:ring-primary/50">
@@ -37,6 +39,7 @@
                                         {% endfor %}
                                     </select>
                                 </div>
+                                {% endif %}
 
                                 {% comment %} <div class="mb-6">
                                     <h3 class="font-semibold mb-2">Color:</h3>
@@ -48,7 +51,7 @@
                                 </div> {% endcomment %}
 
                                 <!-- Size Selector -->
-
+                                {% if single_product.variation_set.sizes %}
                                 <div class="mb-6">
                                     <label for="size-select-detail-1" class="font-semibold mb-2 block">Size:</label>
                                     <select name="size" id="size-select-detail-1" class="w-full max-w-xs p-3 border rounded-md text-base text-text-dark focus:outline-none focus:ring-1 focus:ring-primary/50">
@@ -58,6 +61,7 @@
                                         {% endfor %}
                                     </select>
                                 </div>
+                                {% endif %}
 
                                 {% comment %} <div class="mb-6">
                                     <h3 class="font-semibold mb-2">Size:</h3>
@@ -92,7 +96,7 @@
                                 </div>
                             </form>
 
-                            <p class="text-sm text-text-light"><span class="font-semibold">SKU:</span> WD12345</p>
+                            <!-- <p class="text-sm text-text-light"><span class="font-semibold">SKU:</span> WD12345</p> -->
                             <p class="text-sm text-text-light"><span class="font-semibold">Category:</span> {{ single_product.category }}</p>
                         </div>
                     </div>
@@ -106,7 +110,7 @@
                         <!-- Overall Rating Summary -->
                         <div class="bg-white p-6 rounded-lg shadow-md mb-8 flex items-center gap-6">
                             {% if single_product.countReview == 0 %}
-                            {% if user.is_authenticated %}
+                                {% if user.is_authenticated %}
                                 {% if orderproduct %}
                                 <button id="open-review-modal-btn" class="w-full bg-accent text-white py-3 rounded-md font-semibold hover:bg-opacity-90 transition">Write a Review</button>
                                 {% else %}
@@ -211,5 +215,29 @@
 {% endblock content %}
 
 {% block extra_js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
+<script>
+    $(document).ready(function() {
+        // Find the main image element.
+        const $mainImage = $('.mainImage img');
+        // Find all the thumbnail anchor tags.
+        const $thumbnails = $('.thumb a');
+
+        $thumbnails.click(function(e) {
+            e.preventDefault();
+
+            const clickedHref = $(this).attr("href");
+            $mainImage.attr('src', clickedHref);
+
+            // 1. Remove the active class from all thumbnails.
+            //    We find the img element within each thumbnail and remove the border.
+            $thumbnails.find('img').removeClass('border-primary').addClass('border-transparent hover:border-primary');
+
+            // 2. Add the active class to the clicked thumbnail.
+            //    We find the img element within the clicked thumbnail and set the border.
+            $(this).find('img').removeClass('border-transparent hover:border-primary').addClass('border-primary');
+        });
+    });
+</script>
 {% endblock extra_js %}

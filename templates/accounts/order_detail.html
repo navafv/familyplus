@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <main>
+        <!-- Order Detail Page -->
+        <section id="order_detail" class="page">
+            <div class="container mx-auto px-6 py-16">
+                <div class="mb-6">
+                    <a href="{% url 'my_orders' %}" id="back-to-orders-link" class="text-primary hover:underline">&larr; Back to My Orders</a>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-md">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center border-b pb-4 mb-6">
+                        <div>
+                            <h1 class="text-3xl font-serif text-primary">Order Details</h1>
+                            <p class="text-text-light">Order <span class="font-semibold text-text-dark">{{ order.order_number }}</span> was placed on <span class="font-semibold text-text-dark">{{ order.created_at }}</span></p>
+                        </div>
+                        <div class="mt-4 md:mt-0">
+                            <span class="bg-green-200 text-green-800 px-3 py-1.5 rounded-full text-sm font-semibold">{{ order.status }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2">
+                            <h2 class="text-xl font-semibold text-text-dark mb-4">Items Ordered</h2>
+                            <div class="space-y-4">
+                                <!-- Item Loop -->
+                                {% for item in order_detail %}
+                                <div class="flex items-center border-b py-4">
+                                    <img src="{{ item.product.images.url }}" alt="{{ item.product.product_name }}" class="w-20 h-24 object-cover rounded-md">
+                                    <div class="flex-grow ml-4">
+                                        <h3 class="font-semibold text-lg">{{ item.product.product_name }}</h3>
+                                        {% for i in item.variation.all %}
+                                        <p class="text-sm text-text-light">{{ i.variation_category | capfirst }}: {{ i.variation_value | capfirst }}</p>
+                                        {% endfor %}
+                                        <p class="text-sm text-text-light">Qty: {{ item.quantity }}</p>
+                                    </div>
+                                    <p class="font-semibold text-lg">₹{{ item.product_price }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="lg:col-span-1">
+                            <div class="bg-secondary/50 p-6 rounded-lg mb-6">
+                                <h2 class="text-xl font-semibold text-text-dark mb-4">Shipping Address</h2>
+                                <div class="text-text-light space-y-1">
+                                    <p>{{ order.full_name }}</p>
+                                    <p>{{ order.full_address }}</p>
+                                    <p>{{ order.city }}, {{ order.state }}</p>
+                                    <p>{{ order.country }}</p>
+                                </div>
+                            </div>
+                            <div class="bg-secondary/50 p-6 rounded-lg">
+                                <h2 class="text-xl font-semibold text-text-dark mb-4">Order Summary</h2>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between"><span>Subtotal</span><span>₹{{ subtotal }}</span></div>
+                                    <div class="flex justify-between"><span>Shipping</span><span>₹{{ order.shipping }}</span></div>
+                                    <div class="flex justify-between font-bold text-xl border-t pt-3 mt-2"><span>Total</span><span>₹{{ order.order_total }}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock content %}

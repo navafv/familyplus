@@ -228,6 +228,38 @@
                     });
                 });
             }
+
+            // Dashboard Navigation Logic
+            const dashboardNavLinks = document.querySelectorAll('.dashboard-nav-link');
+            const dashboardPages = document.querySelectorAll('.dashboard-page');
+
+            dashboardNavLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // Check if it's the logout link
+                    if (e.currentTarget.dataset.page) {
+                        showPage(e.currentTarget.dataset.page);
+                        return;
+                    }
+
+                    const pageId = e.currentTarget.dataset.dashboardPage;
+
+                    // Update active link style
+                    dashboardNavLinks.forEach(nav => {
+                        nav.classList.remove('bg-secondary', 'text-primary');
+                        nav.classList.add('text-text-dark');
+                    });
+                    e.currentTarget.classList.add('bg-secondary', 'text-primary');
+                    e.currentTarget.classList.remove('text-text-dark');
+
+                    // Show the correct page
+                    dashboardPages.forEach(page => {
+                        page.classList.add('hidden');
+                    });
+                    const pageToShow = document.getElementById(`dashboard-${pageId}`);
+                    if(pageToShow) pageToShow.classList.remove('hidden');
+                });
+            });
         });
     </script>
 
