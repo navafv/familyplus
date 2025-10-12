@@ -66,19 +66,15 @@
                     <!-- Products Grid -->
                     <div class="w-full lg:w-3/4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-                            <!-- Sample Product Card -->
+                            <!-- Product Card Loop -->
                             {% for product in products %}
-                            <div class="bg-white rounded-lg shadow-md overflow-hidden group text-center">
-                                <div class="relative">
-                                    <img src="{{ product.images.url }}" alt="{{ product.product_name }}" class="w-full h-auto object-cover">
-                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition flex items-center justify-center space-x-4 opacity-0 group-hover:opacity-100">
-                                        <a href="{{ product.get_url }}" data-page="product_detail" class="bg-white text-primary w-10 h-10 rounded-full flex items-center justify-center"><i class="fas fa-search"></i></a>
-                                        <a href="" class="bg-white text-primary w-10 h-10 rounded-full flex items-center justify-center"><i class="far fa-heart"></i></a>
-                                    </div>
-                                </div>
-                                <div class="p-4">
+                            <div class="bg-white rounded-lg shadow-md overflow-hidden text-center flex flex-col">
+                                <a href="{{ product.get_url }}" class="block">
+                                    <img src="{{ product.images.url }}" alt="{{ product.product_name }}" class="w-full h-auto object-cover" />
+                                </a>
+                                <div class="p-4 flex flex-col flex-grow">
                                     <h3 class="font-semibold text-lg text-text-dark">{{ product.product_name }}</h3>
-                                    <p class="text-primary font-bold mt-1">₹{{ product.price }}</p>
+                                    <p class="text-primary font-bold mt-1 mb-3">₹{{ product.price }}</p>
                                 </div>
                             </div>
                             {% empty %}
@@ -92,19 +88,23 @@
                             {% if products.has_previous %}
                                 <a href="?page={{ products.previous_page_number }}" class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">&laquo;</a>
                             {% else %}
-                                <a disabled class="px-4 py-2 border rounded-md">&laquo;</a>
+                                <span class="px-4 py-2 border rounded-md text-gray-400 cursor-not-allowed">&laquo;</span>
                             {% endif %}
-                            {% for i in products.paginator.page_range %}
-                                {% if products.number == i %}
+                            {% for i in custom_page_range %}
+                                {% if i == None %}
+                                    <!-- Ellipsis for gaps in page numbers -->
+                                    <span class="px-4 py-2">...</span>
+                                {% elif products.number == i %}
                                     <a href="" class="px-4 py-2 border rounded-md bg-primary text-white">{{ i }}</a>
                                 {% else %}
-                                    <a href="?page={{ i }}" class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">{{ i }}</a>
+                                    <!-- Other page links -->
+            <a href="?page={{ i }}" class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">{{ i }}</a>
                                 {% endif %}
                             {% endfor %}
                             {% if products.has_next %}
                                 <a href="?page={{ products.next_page_number }}" class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">&raquo;</a>
                             {% else %}
-                                <a disabled class="px-4 py-2 border rounded-md">&raquo;</a>
+                                <span class="px-4 py-2 border rounded-md text-gray-400 cursor-not-allowed">&raquo;</span>
                             {% endif %}
                         </div>
                         {% endif %}

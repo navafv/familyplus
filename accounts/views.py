@@ -1,8 +1,9 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages, auth
+from django.urls import reverse_lazy
 
 from orders.models import Order, OrderProduct
-from .forms import RegistrationForm, UserForm, UserProfileForm
+from .forms import RegistrationForm, UserForm, UserProfileForm, NewsletterSubscriptionForm
 from .models import Account, UserProfile
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -54,7 +55,7 @@ def register(request):
             send_email = EmailMessage(mail_subject, message, to=[to_email])
             send_email.send()
             
-            # messages.success(request, 'Thank you for registering with us. We have send you a verification email to your email address. Please verify it.')
+            # messages.success(request, 'Your account has been created successfully! A verification email has been sent to your inbox.')
             return redirect('/accounts/login/?command=verification&email='+email)
     else:
         form = RegistrationForm
@@ -109,7 +110,7 @@ def login(request):
             except:
                 pass
             auth.login(request, user)
-            messages.success(request, 'You are now logged in')
+            messages.success(request, 'Welcome back, ' + user.first_name + ' ' + user.last_name + '!')
             url = request.META.get('HTTP_REFERER')
             try:
                 query = requests.utils.urlparse(url).query
@@ -121,14 +122,14 @@ def login(request):
             except:
                 return redirect('dashboard')
         else:
-            messages.error(request, 'Invalid login credentials')
+            messages.error(request, 'The email or password you entered is incorrect. Please try again.')
             return redirect('login')
     return render(request, 'accounts/login.html')
 
 @login_required(login_url = 'login')
 def logout(request):
     auth.logout(request)
-    messages.success(request, 'You are logged out')
+    messages.success(request, 'You have been logged out successfully.')
     return redirect('login')
 
 def activate(request, uidb64, token):
@@ -287,3 +288,15 @@ def order_detail(request, order_id):
         'subtotal': subtotal,
     }
     return render(request, 'accounts/order_detail.html', context)
+
+def subscribe_newsletter(request):
+    if request.method == 'POST':
+        form = NewsletterSubscriptionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Thank you for subscribing to our newsletter!')
+        else:
+            messages.error(request, 'This email is either invalid or already subscribed.')
+
+    # Redirect to the previous page, or the home page as a fallback.
+    return redirect(request.META.get('HTTP_REFERER', reverse_lazy('home')))

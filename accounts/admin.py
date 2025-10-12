@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Account, UserProfile
+from .models import Account, UserProfile, ContactMessage
 from django.utils.html import format_html
 
 # Register your models here.
@@ -21,5 +21,14 @@ class UserProfileAdmin(admin.ModelAdmin):
     thumbnail.short_description = 'Profile Picture'
     list_display = ('thumbnail', 'user', 'city', 'state', 'country')
 
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'subject', 'created_at', 'is_resolved')
+    list_filter = ('is_resolved', 'created_at')
+    search_fields = ('name', 'email', 'subject', 'message')
+    readonly_fields = ('name', 'email', 'subject', 'message', 'created_at')
+    list_per_page = 25
+
+
 admin.site.register(Account, AccountAdmin)
 admin.site.register(UserProfile, UserProfileAdmin)
+admin.site.register(ContactMessage, ContactMessageAdmin)

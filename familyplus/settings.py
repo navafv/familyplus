@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'store',
     'carts',
     'orders',
+    # 'admin_honeypot',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',
 ]
 
 ROOT_URLCONF = 'familyplus.urls'
@@ -82,10 +84,21 @@ AUTH_USER_MODEL = 'accounts.Account'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE'    : config('DATABASE_ENGINE'),
+        'NAME'      : config('DATABASE_NAME'),      # Your database name
+        'USER'      : config('DATABASE_USER'),      # Your database user
+        'PASSWORD'  : config('DATABASE_PASSWORD'),  # The user's password
+        'HOST'      : config('DATABASE_HOST'),      # Or the IP of your DB server
+        'PORT'      : config('DATABASE_PORT'),      # Default PostgreSQL port
     }
 }
 
@@ -139,8 +152,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # SMTP CONFIGURATION
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_PORT = config('EMAIL_PORT', cast=int)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST          = config('EMAIL_HOST')
+EMAIL_PORT          = config('EMAIL_PORT', cast=int)
+EMAIL_HOST_USER     = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_USE_TLS       = config('EMAIL_USE_TLS', cast=bool)
+
+SESSION_EXPIRE_SECONDS              = 3600   # 3600 for 1 hour
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY  = True
+SESSION_TIMEOUT_REDIRECT            = '/accounts/login/'

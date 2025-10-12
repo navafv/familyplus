@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <main>
+        <!-- Contact Page -->
+        <section id="contact" class="page">
+            <div class="container mx-auto px-6 py-16">
+                <div class="text-center">
+                    <h1 class="text-5xl font-serif text-primary mb-4">Get in Touch</h1>
+                    <p class="text-lg text-text-light max-w-3xl mx-auto">We'd love to hear from you! Whether you have a question about our products, an order, or just want to say hello.</p>
+                </div>
+                <div class="flex flex-col lg:flex-row gap-10 mt-12">
+                    <div class="w-full lg:w-1/2 bg-white p-8 rounded-lg shadow-md">
+                        <h2 class="text-2xl font-semibold mb-6">Send us a Message</h2>
+                        <form action="{% url 'contact' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="mb-4">
+                                {% for field in form %}
+                                <label class="block mb-1">{{ field.label }}</label>
+                                {{ field }}
+                                {% endfor %}
+                            </div>
+                            <button type="submit" class="bg-primary text-white w-full py-3 rounded-md font-semibold hover:bg-opacity-90 transition">Send Message</button>
+                        </form>
+                    </div>
+                     <div class="w-full lg:w-1/2">
+                        <div class="bg-white p-8 rounded-lg shadow-md mb-6">
+                            <h3 class="text-xl font-semibold mb-4">Contact Information</h3>
+                            <a href="https://maps.app.goo.gl/AQYuEeQ7DPVkU8hM9" target="_blank" class="flex items-center mb-3"><i class="fas fa-map-marker-alt text-primary w-6"></i> Nr. Karunya Clinic, Kudukkimotta, Kannur, Kerala, India - 670592</a>
+                            <a href="tel:+919778044780" target="_blank" class="flex items-center mb-3"><i class="fas fa-phone-alt text-primary w-6"></i> +91 97780 44780</a>
+                            <a href="mailto:familypluskdmt@gmail.com" target="_blank" class="flex items-center"><i class="fas fa-envelope text-primary w-6"></i> familypluskdmt@gmail.com</a>
+                        </div>
+                        <div class="rounded-lg shadow-md overflow-hidden h-64">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3903.858841455973!2d75.4542075!3d11.9149105!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba43b18772af973%3A0x33e350308f290851!2sFAMILY%20PLUS!5e0!3m2!1sen!2sin!4v1760247245168!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="w-full h-full object-cover"></iframe>
+                            {% comment %} <img src="https://placehold.co/800x400/CCCCCC/FFFFFF?text=Map+Placeholder" class="w-full h-full object-cover" alt="Map"> {% endcomment %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock content %}

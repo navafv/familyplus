@@ -2,13 +2,12 @@
     <!-- Header Section -->
     <header class="bg-white shadow-md sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="{% url 'home' %}" data-page="home" class="text-3xl font-serif text-primary font-bold">Family Plus</a>
+            <a href="{% url 'home' %}" class="text-3xl font-serif text-primary font-bold">Family Plus</a>
             <div class="hidden lg:flex items-center space-x-8">
-                <a href="{% url 'home' %}" data-page="home" class="text-text-dark hover:text-primary transition">Home</a>
-                <a href="{% url 'store' %}" data-page="product_list" class="text-text-dark hover:text-primary transition">Store</a>
-                {% comment %} <a href="#" data-page="product_list" class="text-text-dark hover:text-primary transition">Kids</a> {% endcomment %}
-                <a href="#" data-page="about" class="text-text-dark hover:text-primary transition">About Us</a>
-                <a href="#" data-page="contact" class="text-text-dark hover:text-primary transition">Contact</a>
+                <a href="{% url 'home' %}" class="text-text-dark hover:text-primary transition">Home</a>
+                <a href="{% url 'store' %}" class="text-text-dark hover:text-primary transition">Store</a>
+                <a href="{% url 'about' %}" class="text-text-dark hover:text-primary transition">About Us</a>
+                <a href="{% url 'contact' %}" class="text-text-dark hover:text-primary transition">Contact</a>
             </div>
             <div class="flex items-center space-x-5">
                 <!-- Search bar for medium screens and up -->
