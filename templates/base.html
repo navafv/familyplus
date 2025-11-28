@@ -1,15 +1,13 @@
-{% load static %}<!DOCTYPE html>
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Family Plus - Ladies & Kids Wear</title>
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Custom Tailwind CSS Configuration -->
     <script>
         tailwind.config = {
             theme: {
@@ -19,9 +17,9 @@
                         'serif': ['Playfair Display', 'serif'],
                     },
                     colors: {
-                        'primary': '#E7A9B1', // Soft Pink
-                        'secondary': '#F7E6E8', // Lighter Pink
-                        'accent': '#63A3A3', // Muted Teal
+                        'primary': '#E7A9B1',
+                        'secondary': '#F7E6E8',
+                        'accent': '#63A3A3',
                         'text-dark': '#4A4A4A',
                         'text-light': '#888888',
                     }
@@ -30,262 +28,39 @@
         }
     </script>
 
-    <!-- Basic styles for page transitions and layout -->
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            color: #4A4A4A;
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #F7E6E8;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #E7A9B1;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #d198a0;
-        }
-        /* Message Banner Transitions */
-        .message-banner-enter {
-            opacity: 0;
-            transform: translateY(-100%);
-        }
-        .message-banner-enter-active {
-            opacity: 1;
-            transform: translateY(0);
-            transition: opacity 300ms, transform 300ms ease-out;
-        }
-        .message-banner-exit {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .message-banner-exit-active {
-            opacity: 0;
-            transform: translateY(-100%);
-            transition: opacity 300ms, transform 300ms ease-in;
-        }
-        /* Modal Styles */
-        .modal {
-            transition: opacity 0.3s ease;
-        }
-        .modal-content {
-            transition: transform 0.3s ease;
-        }
-        .modal.hidden .modal-content {
-            transform: scale(0.95);
-        }
-    </style>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body class="bg-secondary/30">
-    
-	{% include 'includes/alerts.html' %}
-	{% include 'includes/navbar.html' %}
+
+    {% include 'includes/alerts.html' %}
+    {% include 'includes/navbar.html' %}
 
     {% block content %}{% endblock content %}
 
-	{% include 'includes/footer.html' %}
+    {% include 'includes/footer.html' %}
 
-    <script>
-        // Message Banner Function
-        function showMessage(type = 'info', title, message, duration = 5000) {
-            const container = document.getElementById('notification-container');
-            if (!container) return;
-
-            const banner = document.createElement('div');
-            
-            let bgColor, textColor, iconClass;
-
-            switch (type) {
-                case 'success':
-                    bgColor = 'bg-accent';
-                    textColor = 'text-white';
-                    iconClass = 'fa-check-circle';
-                    break;
-                case 'error':
-                    bgColor = 'bg-red-500';
-                    textColor = 'text-white';
-                    iconClass = 'fa-times-circle';
-                    break;
-                case 'info':
-                default:
-                    bgColor = 'bg-blue-500';
-                    textColor = 'text-white';
-                    iconClass = 'fa-info-circle';
-                    break;
-            }
-
-            banner.className = `w-full max-w-4xl mx-auto ${bgColor} ${textColor} rounded-lg shadow-lg flex items-center justify-between p-4 mb-2 message-banner-enter pointer-events-auto`;
-            
-            banner.innerHTML = `
-                <div class="flex items-center">
-                    <span class="text-xl mr-3"><i class="fas ${iconClass}"></i></span>
-                    <p class="text-sm"><span class="font-bold mr-1">${title}</span> ${message}</p>
-                </div>
-                <button class="text-xl opacity-70 hover:opacity-100 focus:outline-none">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-
-            container.appendChild(banner);
-
-            requestAnimationFrame(() => {
-                banner.classList.add('message-banner-enter-active');
-            });
-
-            const closeButton = banner.querySelector('button');
-            
-            const removeBanner = () => {
-                banner.classList.remove('message-banner-enter-active');
-                banner.classList.add('message-banner-exit-active');
-                banner.addEventListener('transitionend', () => {
-                    banner.remove();
-                });
-            };
-            
-            closeButton.addEventListener('click', removeBanner);
-
-            // use custom duration
-            if (duration > 0) {
-                setTimeout(removeBanner, duration);
-            }
-        }
-
-
-        // Navigation and UI Script
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const mobileSearchButton = document.getElementById('mobile-search-button');
-            const mobileSearchOverlay = document.getElementById('mobile-search-overlay');
-            const closeSearchButton = document.getElementById('close-search-button');
-            
-            mobileMenuButton.addEventListener('click', function() {
-                mobileMenu.classList.toggle('hidden');
-            });
-
-            // Event listeners for mobile search
-            mobileSearchButton.addEventListener('click', function() {
-                mobileSearchOverlay.classList.remove('hidden');
-                mobileSearchOverlay.querySelector('input').focus();
-                mobileMenu.classList.add('hidden'); // Hide menu if search is opened
-            });
-
-            closeSearchButton.addEventListener('click', function() {
-                mobileSearchOverlay.classList.add('hidden');
-            });
-
-            // Review Modal Logic
-            const reviewModal = document.getElementById('review-modal');
-            const openReviewModalBtn = document.getElementById('open-review-modal-btn');
-            const closeReviewModalBtn = document.getElementById('close-review-modal');
-            const starRatingContainer = document.getElementById('star-rating');
-            const ratingValueInput = document.getElementById('rating-value');
-            const stars = starRatingContainer.querySelectorAll('.fa-star');
-
-            if (reviewModal && openReviewModalBtn && closeReviewModalBtn) {
-                openReviewModalBtn.addEventListener('click', () => {
-                    reviewModal.classList.remove('hidden');
-                    reviewModal.classList.add('flex');
-                });
-
-                const closeModal = () => {
-                    reviewModal.classList.add('hidden');
-                    reviewModal.classList.remove('flex');
-                };
-
-                closeReviewModalBtn.addEventListener('click', closeModal);
-                reviewModal.addEventListener('click', (e) => {
-                    if (e.target === reviewModal) {
-                        closeModal();
-                    }
-                });
-                
-                // Star Rating Interaction
-                stars.forEach(star => {
-                    star.addEventListener('mouseover', () => {
-                        const rating = star.dataset.value;
-                        stars.forEach(s => {
-                            s.classList.toggle('text-yellow-400', s.dataset.value <= rating);
-                            s.classList.toggle('text-gray-300', s.dataset.value > rating);
-                        });
-                    });
-
-                    star.addEventListener('mouseout', () => {
-                        const currentRating = ratingValueInput.value;
-                        stars.forEach(s => {
-                            s.classList.toggle('text-yellow-400', s.dataset.value <= currentRating);
-                            s.classList.toggle('text-gray-300', s.dataset.value > currentRating);
-                        });
-                    });
-
-                    star.addEventListener('click', () => {
-                        ratingValueInput.value = star.dataset.value;
-                    });
-                });
-            }
-
-            // Dashboard Navigation Logic
-            const dashboardNavLinks = document.querySelectorAll('.dashboard-nav-link');
-            const dashboardPages = document.querySelectorAll('.dashboard-page');
-
-            dashboardNavLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    // Check if it's the logout link
-                    if (e.currentTarget.dataset.page) {
-                        showPage(e.currentTarget.dataset.page);
-                        return;
-                    }
-
-                    const pageId = e.currentTarget.dataset.dashboardPage;
-
-                    // Update active link style
-                    dashboardNavLinks.forEach(nav => {
-                        nav.classList.remove('bg-secondary', 'text-primary');
-                        nav.classList.add('text-text-dark');
-                    });
-                    e.currentTarget.classList.add('bg-secondary', 'text-primary');
-                    e.currentTarget.classList.remove('text-text-dark');
-
-                    // Show the correct page
-                    dashboardPages.forEach(page => {
-                        page.classList.add('hidden');
-                    });
-                    const pageToShow = document.getElementById(`dashboard-${pageId}`);
-                    if(pageToShow) pageToShow.classList.remove('hidden');
-                });
-            });
-        });
-    </script>
+    <!-- Custom JS -->
+    <script src="{% static 'js/script.js' %}" defer></script>
 
     {% if messages %}
         <script>
-            // Ensure this script runs after the main DOMContentLoaded event
-            // or place it at the very end of your body tag.
             window.addEventListener('load', function() {
                 {% for message in messages %}
-                    // The message.tags can be 'success', 'error', 'info', 'warning'
-                    var messageType = '{{ message.tags }}';
-                    if (messageType === 'warning') {
-                        messageType = 'info'; // Map Django's 'warning' to our 'info' style
-                    }
-                    
-                    // Capitalize the first letter for a default title
-                    var title = messageType.charAt(0).toUpperCase() + messageType.slice(1) + '!';
-
-                    showMessage(messageType, title, '{{ message|escapejs }}');
+                    let type = '{{ message.tags }}' === 'warning' ? 'info' : '{{ message.tags }}';
+                    let title = type.charAt(0).toUpperCase() + type.slice(1) + '!';
+                    showMessage(type, title, '{{ message|escapejs }}');
                 {% endfor %}
             });
         </script>
     {% endif %}
-    
-    {% block extra_js %}
-	{% endblock extra_js %}
 
+    {% block extra_js %}{% endblock extra_js %}
 </body>
 </html>

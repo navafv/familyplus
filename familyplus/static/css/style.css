@@ -1,0 +1,52 @@
+/* Global Body Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #4A4A4A;
+    background-color: rgba(247, 230, 232, 0.3); /* matching bg-secondary/30 */
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #F7E6E8;
+}
+::-webkit-scrollbar-thumb {
+    background: #E7A9B1;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #d198a0;
+}
+
+/* Message Banner Transitions */
+.message-banner-enter {
+    opacity: 0;
+    transform: translateY(-100%);
+}
+.message-banner-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms, transform 300ms ease-out;
+}
+.message-banner-exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+.message-banner-exit-active {
+    opacity: 0;
+    transform: translateY(-100%);
+    transition: opacity 300ms, transform 300ms ease-in;
+}
+
+/* Modal Styles */
+.modal {
+    transition: opacity 0.3s ease;
+}
+.modal-content {
+    transition: transform 0.3s ease;
+}
+.modal.hidden .modal-content {
+    transform: scale(0.95);
+}

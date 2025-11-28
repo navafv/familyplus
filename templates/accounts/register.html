@@ -10,7 +10,7 @@
                         <h1 class="text-3xl font-serif text-primary">Create Account</h1>
                         <p class="text-text-light">Join the Family Plus community!</p>
                     </div>
-                    <form action="{% url 'register' %}" method="POST">
+                    <form action="{% url 'accounts:register' %}" method="POST">
                         {% csrf_token %}
                         {% comment %} {{ form.email.errors }}
                         {{ form.non_field_errors }} {% endcomment %}
@@ -23,7 +23,7 @@
                         <button type="submit" class="block text-center bg-primary text-white w-full py-3 rounded-md font-semibold hover:bg-opacity-90 transition">Register</button>
                     </form>
                     <div class="text-center mt-6">
-                        <p class="text-sm text-text-light">Already have an account? <a href="{% url 'login' %}" data-page="login" class="font-semibold text-primary hover:underline">Log In</a></p>
+                        <p class="text-sm text-text-light">Already have an account? <a href="{% url 'accounts:login' %}" data-page="login" class="font-semibold text-primary hover:underline">Log In</a></p>
                     </div>
                 </div>
             </div>

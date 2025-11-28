@@ -3,15 +3,19 @@ from django.urls import reverse
 from category.models import Category
 from accounts.models import Account
 from django.db.models import Avg, Count
+import os
 
-# Create your models here.
+
+def product_image_upload_path(instance, filename):
+    # uploads to photos/products/<product-slug>/<filename>
+    return os.path.join('photos', 'products', instance.slug if hasattr(instance, 'slug') else 'general', filename)
 
 class Product(models.Model):
     product_name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
     description = models.TextField(max_length=500, blank=True)
-    price = models.IntegerField()
-    images = models.ImageField(upload_to='photos/products')
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    images = models.ImageField(upload_to=product_image_upload_path)
     stock = models.IntegerField()
     is_available = models.BooleanField(default=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -19,40 +23,34 @@ class Product(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
 
     def get_url(self):
-        return reverse('product_detail', args=[self.category.slug, self.slug])
-
+        return reverse('store:product_detail', args=[self.category.slug, self.slug])
+    
     def __str__(self):
         return self.product_name
     
-    def averageReview(self):
-        reviews = ReviewRating.objects.filter(product=self, status=True).aggregate(average=Avg('rating'))
-        avg = 0
-        if reviews['average'] is not None:
-            avg = float(reviews['average'])
-        return avg
+    def average_review(self):
+        result = ReviewRating.objects.filter(product=self, status=True).aggregate(average=Avg('rating'))
+        return float(result['average'] or 0)
     
-    def countReview(self):
-        reviews = ReviewRating.objects.filter(product=self, status=True).aggregate(count=Count('id'))
-        count = 0
-        if reviews['count'] is not None:
-            count = int(reviews['count'])
-        return count
+    def review_count(self):
+        result = ReviewRating.objects.filter(product=self, status=True).aggregate(count=Count('id'))
+        return int(result['count'] or 0)
     
 class VariationManager(models.Manager):
     def colors(self):
-        return super(VariationManager, self).filter(variation_category='color', is_active=True)
+        return super().filter(variation_category='color', is_active=True).distinct()
     
     def sizes(self):
-        return super(VariationManager, self).filter(variation_category='size', is_active=True)
+        return super().filter(variation_category='size', is_active=True).distinct()
 
-variation_category_choice = (
-    ('color', 'color'),
-    ('size', 'size'),
+VARIATION_CATEGORY_CHOICES = (
+    ('color', 'Color'),
+    ('size', 'Size'),
 )
 
 class Variation(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    variation_category = models.CharField(max_length=100, choices=variation_category_choice)
+    variation_category = models.CharField(max_length=100, choices=VARIATION_CATEGORY_CHOICES)
     variation_value = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now=True)
@@ -68,11 +66,11 @@ class ReviewRating(models.Model):
     subject = models.CharField(max_length=100, blank=True)
     review = models.TextField(max_length=500, blank=True)
     rating = models.FloatField()
-    ip = models.CharField(max_length=20, blank=True)
+    ip = models.CharField(max_length=45, blank=True)
     status = models.BooleanField(default=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    
     def __str__(self):
         return self.subject
     
@@ -82,7 +80,7 @@ class ProductGallery(models.Model):
 
     class Meta:
         verbose_name = 'Product Gallery'
-        verbose_name_plural = 'Product Gallery'
+        verbose_name_plural = 'Product Galleries'
 
     def __str__(self):
         return self.product.product_name

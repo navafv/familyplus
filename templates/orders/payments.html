@@ -73,7 +73,7 @@
                                 <span>Total</span>
                                 <span>₹{{ grand_total }}</span>
                             </div>
-                            <form action="{% url 'payments' %}" method="POST">
+                            <form action="{% url 'orders:payments' %}" method="POST">
                                 {% csrf_token %}
                                 <input type="text" name="order_id" value="{{ order.order_number }}" hidden>
                                 <button type="submit" class="block text-center bg-primary text-white w-full py-3 mt-6 rounded-md font-semibold hover:bg-opacity-90 transition">Place Order</button>

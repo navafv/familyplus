@@ -20,7 +20,7 @@
                             <div class="w-full bg-white p-4 rounded-lg shadow-md mb-4 md:mb-0">
                                 <h2 class="text-2xl font-semibold text-text-dark mb-2">Total Orders</h2>
                                 <h2 class="text-2xl font-semibold text-text-dark mb-2">{{ orders_count }}</h2>
-                                <a href="{% url 'my_orders' %}" class="text-text-dark hover:text-primary transition">View Orders</a>
+                                <a href="{% url 'accounts:my_orders' %}" class="text-text-dark hover:text-primary transition">View Orders</a>
                             </div>
                             <div class="w-full flex justify-between items-center bg-white p-4 rounded-lg shadow-md">
                                 <img src="{{ userprofile.profile_picture.url }}" alt="Profile Picture" style="border-radius: 50%; margin: 0 auto; width: 80px;" />

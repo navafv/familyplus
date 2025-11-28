@@ -1,243 +1,158 @@
 {% extends "base.html" %}
 {% block content %}
-    <main>
-        <!-- Product Detail Page -->
-        <section id="product_detail">
-             <div class="bg-white py-16">
-                <div class="container mx-auto px-6">
-                    <p class="mb-6 text-text-light"><a href="{% url 'home' %}" data-page="home" class="hover:text-primary">Home</a> / <a href="{% url 'products_by_category' single_product.category.slug %}" class="hover:text-primary">{{ single_product.category }}</a> / {{ single_product.product_name }}</p>
-                    <div class="flex flex-col lg:flex-row gap-12">
-                        <!-- Image Gallery -->
-                        <div class="w-full lg:w-1/2">
-                            <div class="mainImage">
-                                <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" class="w-full rounded-lg shadow-md mb-4">
-                            </div>
-                            <div class="grid grid-cols-4 gap-4 thumb">
-                                <a href="{{ single_product.images.url }}" target="mainImage"><img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" class="rounded-md cursor-pointer border-2 border-primary"></a>
-                                {% for image in product_gallery %}
-                                <a href="{{ image.image.url }}" target="mainImage"><img src="{{ image.image.url }}" alt="{{ single_product.product_name }}" class="rounded-md cursor-pointer border-2"></a>
-                                {% endfor %}
-                            </div>
+<main>
+    <section id="product_detail">
+        <div class="bg-white py-16">
+            <div class="container mx-auto px-6">
+                <p class="mb-6 text-text-light">
+                    <a href="{% url 'home' %}" class="hover:text-primary">Home</a> / 
+                    <a href="{% url 'store:products_by_category' single_product.category.slug %}" class="hover:text-primary">{{ single_product.category }}</a> / 
+                    {{ single_product.product_name }}
+                </p>
+                <div class="flex flex-col lg:flex-row gap-12">
+                    <!-- Image Gallery -->
+                    <div class="w-full lg:w-1/2">
+                        <div class="mainImage">
+                            <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" class="w-full rounded-lg shadow-md mb-4">
                         </div>
-                        <!-- Product Info -->
-                        <div class="w-full lg:w-1/2">
-                            <h1 class="text-4xl font-serif text-primary">{{ single_product.product_name }}</h1>
-                            <p class="text-2xl font-bold text-text-dark my-4">₹{{ single_product.price }}</p>
-                            <p class="text-text-light leading-relaxed mb-6">{{ single_product.description }}</p>
-                            
-                            <form action="{% url 'add_cart' single_product.id %}" method="POST">
-                                {% csrf_token %}
-
-                                <!-- Color Selector -->
-                                {% if single_product.variation_set.colors %}
-                                <div class="mb-6">
-                                    <label for="size-select-detail-1" class="font-semibold mb-2 block">Color:</label>
-                                    <select name="color" id="size-select-detail-1" class="w-full max-w-xs p-3 border rounded-md text-base text-text-dark focus:outline-none focus:ring-1 focus:ring-primary/50">
-                                        <option disabled selected>Select a color</option>
-                                        {% for i in single_product.variation_set.colors %}
-                                        <option value="{{ i.variation_value | lower }}">{{ i.variation_value | capfirst }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                {% endif %}
-
-                                {% comment %} <div class="mb-6">
-                                    <h3 class="font-semibold mb-2">Color:</h3>
-                                    <div class="flex gap-3">
-                                        <button disabled class="w-8 h-8 rounded-full bg-pink-300 border-2 border-text-dark" title="Pink Floral"></button>
-                                        <button disabled class="w-8 h-8 rounded-full bg-blue-300 border-2 border-transparent hover:border-text-dark" title="Blue Floral"></button>
-                                        <button disabled class="w-8 h-8 rounded-full bg-yellow-200 border-2 border-transparent hover:border-text-dark" title="Yellow Floral"></button>
-                                    </div>
-                                </div> {% endcomment %}
-
-                                <!-- Size Selector -->
-                                {% if single_product.variation_set.sizes %}
-                                <div class="mb-6">
-                                    <label for="size-select-detail-1" class="font-semibold mb-2 block">Size:</label>
-                                    <select name="size" id="size-select-detail-1" class="w-full max-w-xs p-3 border rounded-md text-base text-text-dark focus:outline-none focus:ring-1 focus:ring-primary/50">
-                                        <option disabled selected>Select a size</option>
-                                        {% for i in single_product.variation_set.sizes %}
-                                        <option value="{{ i.variation_value | lower }}">{{ i.variation_value | capfirst }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                {% endif %}
-
-                                {% comment %} <div class="mb-6">
-                                    <h3 class="font-semibold mb-2">Size:</h3>
-                                    <div class="flex gap-2">
-                                        <button disabled class="w-12 h-12 border rounded-md hover:bg-primary hover:text-white transition">XS</button>
-                                        <button disabled class="w-12 h-12 border rounded-md bg-primary text-white transition">S</button>
-                                        <button disabled class="w-12 h-12 border rounded-md hover:bg-primary hover:text-white transition">M</button>
-                                        <button disabled class="w-12 h-12 border rounded-md hover:bg-primary hover:text-white transition">L</button>
-                                    </div>
-                                </div> {% endcomment %}
-
-                                <!-- Quantity and Add to Cart -->
-
-                                <div class="flex items-center gap-4 mb-8">
-                                    {% comment %} <div class="flex items-center border rounded-md">
-                                        <button class="px-4 py-2 text-lg">-</button>
-                                        <span class="px-4 py-2 text-lg">1</span>
-                                        <button class="px-4 py-2 text-lg">+</button>
-                                    </div> {% endcomment %}
-                                    
-                                    {% if single_product.stock <= 0 %}
-                                        <button disabled class="bg-primary text-white flex-grow py-3 px-8 rounded-md font-semibold hover:bg-red-500 transition transform">Out of stock</button>
-                                    {% else %}
-                                        {% comment %} {% if in_cart %}
-                                        <button disabled class="bg-green-600 text-white flex-grow py-3 px-8 rounded-md font-semibold hover:bg-opacity-90 transition transform">Added to Cart</button>
-                                        <a href="{% url 'cart' %}" class="bg-primary text-white flex-grow py-3 px-8 rounded-md font-semibold hover:bg-opacity-90 transition transform">View Cart</a>
-                                        {% else %}
-                                        <button type="submit" class="bg-primary text-white flex-grow py-3 px-8 rounded-md font-semibold hover:bg-opacity-90 transition transform hover:scale-105">Add to Cart</button>
-                                        {% endif %} {% endcomment %}
-                                        <button type="submit" class="bg-primary text-white flex-grow py-3 px-8 rounded-md font-semibold hover:bg-opacity-90 transition transform hover:scale-105">Add to Cart</button>
-                                    {% endif %}
-                                </div>
-                            </form>
-
-                            <!-- <p class="text-sm text-text-light"><span class="font-semibold">SKU:</span> WD12345</p> -->
-                            <p class="text-sm text-text-light"><span class="font-semibold">Category:</span> {{ single_product.category }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Customer Reviews Section -->
-            <div id="customer-reviews-section" class="py-16 bg-secondary/30">
-                <div class="container mx-auto px-6">
-                    <h2 class="text-3xl font-serif text-center mb-10">What Our Customers Say</h2>
-                    <div class="max-w-4xl mx-auto">
-                        <!-- Overall Rating Summary -->
-                        <div class="bg-white p-6 rounded-lg shadow-md mb-8 flex items-center gap-6">
-                            {% if single_product.countReview == 0 %}
-                                {% if user.is_authenticated %}
-                                {% if orderproduct %}
-                                <button id="open-review-modal-btn" class="w-full bg-accent text-white py-3 rounded-md font-semibold hover:bg-opacity-90 transition">Write a Review</button>
-                                {% else %}
-                                <button class="w-full bg-red-600 text-white py-3 rounded-md font-semibold hover:bg-opacity-90 transition">You must purchase this product to post a review</button>
-                                {% endif %}
-                                {% else %}
-                                <button class="w-full bg-red-600 text-white py-3 rounded-md font-semibold hover:bg-opacity-90 transition">You must be logged in to post a review <a href="{% url 'login' %}">Login now</a></button>
-                                {% endif %}
-                            {% else %}
-                            <div class="text-center">
-                                <p class="text-5xl font-bold text-primary">{{ single_product.averageReview }}</p>
-                                <div class="text-yellow-400 text-lg">
-                                    <i class="{% if single_product.averageReview < 0.5 %}far fa-star{% elif single_product.averageReview >= 0.5 and single_product.averageReview < 1 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}"></i>
-                                    <i class="{% if single_product.averageReview < 1.5 %}far fa-star{% elif single_product.averageReview >= 1.5 and single_product.averageReview < 2 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}"></i>
-                                    <i class="{% if single_product.averageReview < 2.5 %}far fa-star{% elif single_product.averageReview >= 2.5 and single_product.averageReview < 3 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}"></i>
-                                    <i class="{% if single_product.averageReview < 3.5 %}far fa-star{% elif single_product.averageReview >= 3.5 and single_product.averageReview < 4 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}"></i>
-                                    <i class="{% if single_product.averageReview < 4.5 %}far fa-star{% elif single_product.averageReview >= 4.5 and single_product.averageReview < 5 %}fas fa-star-half-alt{% else %}fas fa-star{% endif %}"></i>
-                                </div>
-                                <p class="text-text-light text-sm mt-1">Based on {{ single_product.countReview }} Review{% if single_product.countReview != 1 %}s{% endif %}</p>
-                            </div>
-                            <div class="flex-grow">
-                                {% if user.is_authenticated %}
-                                {% if orderproduct %}
-                                <button id="open-review-modal-btn" class="w-full bg-accent text-white py-3 rounded-md font-semibold hover:bg-opacity-90 transition">Write a Review</button>
-                                {% else %}
-                                <button class="w-full bg-red-600 text-white py-3 rounded-md font-semibold hover:bg-opacity-90 transition">You must purchase this product to post a review</button>
-                                {% endif %}
-                                {% else %}
-                                <button class="w-full bg-red-600 text-white py-3 rounded-md font-semibold hover:bg-opacity-90 transition">You must be logged in to post a review <a href="{% url 'login' %}">Login now</a></button>
-                                {% endif %}
-                            </div>
-                            {% endif %}
-                        </div>
-
-                        <!-- Individual Reviews -->
-                        <div class="space-y-6">
-                            <!-- Review Loop -->
-                             {% for review in reviews %}
-                             <div class="bg-white p-6 rounded-lg shadow-md">
-                                 <div class="flex items-center justify-between mb-2">
-                                     <h3 class="font-semibold text-lg text-text-dark">{{ review.subject }}</h3>
-                                     <div class="text-yellow-400">
-                                        <i class="{% if review.rating >= 1 %}fas fa-star{% elif review.rating >= 0.5 %}fa fa-star-half-alt{% else %}far fa-star{% endif %}" aria-hidden="true"></i>
-                                        <i class="{% if review.rating >= 2 %}fas fa-star{% elif review.rating >= 1.5 %}fa fa-star-half-alt{% else %}far fa-star{% endif %}" aria-hidden="true"></i>
-                                        <i class="{% if review.rating >= 3 %}fas fa-star{% elif review.rating >= 2.5 %}fa fa-star-half-alt{% else %}far fa-star{% endif %}" aria-hidden="true"></i>
-                                        <i class="{% if review.rating >= 4 %}fas fa-star{% elif review.rating >= 3.5 %}fa fa-star-half-alt{% else %}far fa-star{% endif %}" aria-hidden="true"></i>
-                                        <i class="{% if review.rating >= 5 %}fas fa-star{% elif review.rating >= 4.5 %}fa fa-star-half-alt{% else %}far fa-star{% endif %}" aria-hidden="true"></i>
-                                    </div>
-                                </div>
-                                <p class="text-sm text-text-light mb-3">by <span class="font-medium text-text-dark">{{ review.user.full_name }}</span> on {{ review.updated_at }}</p>
-                                <p class="text-text-dark leading-relaxed">{{ review.review }}</p>
-                            </div>
+                        <div class="grid grid-cols-4 gap-4 thumb">
+                            <a href="{{ single_product.images.url }}"><img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}" class="rounded-md cursor-pointer border-2 border-primary"></a>
+                            {% for image in product_gallery %}
+                            <a href="{{ image.image.url }}"><img src="{{ image.image.url }}" alt="{{ single_product.product_name }}" class="rounded-md cursor-pointer border-2 border-transparent hover:border-primary"></a>
                             {% endfor %}
                         </div>
                     </div>
+
+                    <!-- Product Info -->
+                    <div class="w-full lg:w-1/2">
+                        <h1 class="text-4xl font-serif text-primary">{{ single_product.product_name }}</h1>
+                        <p class="text-2xl font-bold text-text-dark my-4">₹{{ single_product.price }}</p>
+                        <p class="text-text-light leading-relaxed mb-6">{{ single_product.description }}</p>
+
+                        <form action="{% url 'carts:add_cart' single_product.id %}" method="POST">
+                            {% csrf_token %}
+
+                            {% if single_product.variation_set.colors %}
+                            <div class="mb-6">
+                                <label for="color-select" class="font-semibold mb-2 block">Color:</label>
+                                <select name="color" id="color-select" class="w-full max-w-xs p-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/50">
+                                    <option disabled selected>Select a color</option>
+                                    {% for color in single_product.variation_set.colors %}
+                                    <option value="{{ color.variation_value | lower }}">{{ color.variation_value | capfirst }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% endif %}
+
+                            {% if single_product.variation_set.sizes %}
+                            <div class="mb-6">
+                                <label for="size-select" class="font-semibold mb-2 block">Size:</label>
+                                <select name="size" id="size-select" class="w-full max-w-xs p-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/50">
+                                    <option disabled selected>Select a size</option>
+                                    {% for size in single_product.variation_set.sizes %}
+                                    <option value="{{ size.variation_value | lower }}">{{ size.variation_value | capfirst }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% endif %}
+
+                            <div class="flex items-center gap-4 mb-8">
+                                {% if single_product.stock <= 0 %}
+                                <button disabled class="bg-primary text-white flex-grow py-3 px-8 rounded-md font-semibold hover:bg-red-500 transition">Out of stock</button>
+                                {% else %}
+                                <button type="submit" class="bg-primary text-white flex-grow py-3 px-8 rounded-md font-semibold hover:bg-opacity-90 transition transform hover:scale-105">Add to Cart</button>
+                                {% endif %}
+                            </div>
+                        </form>
+
+                        <p class="text-sm text-text-light"><span class="font-semibold">Category:</span> {{ single_product.category }}</p>
+                    </div>
                 </div>
             </div>
-        </section>
-    </main>
-
-    <!-- Review Form Modal -->
-    <div id="review-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-[100] hidden items-center justify-center p-4">
-        <div id="review-modal-content" class="modal-content bg-white rounded-lg shadow-xl w-full max-w-lg p-6 relative transform transition-transform">
-            <button id="close-review-modal" class="absolute top-4 right-4 text-2xl text-text-light hover:text-text-dark">&times;</button>
-            <h2 class="text-2xl font-serif text-primary mb-6">Write a Review</h2>
-            <form action="{% url 'submit_review' single_product.id %}" method="POST">
-                {% csrf_token %}
-                <div class="mb-4">
-                    <label class="font-semibold mb-2 block">Your Rating</label>
-                    <div class="flex items-center text-3xl text-gray-300" id="star-rating">
-                        <i class="fas fa-star cursor-pointer" data-value="1"></i>
-                        <i class="fas fa-star cursor-pointer" data-value="2"></i>
-                        <i class="fas fa-star cursor-pointer" data-value="3"></i>
-                        <i class="fas fa-star cursor-pointer" data-value="4"></i>
-                        <i class="fas fa-star cursor-pointer" data-value="5"></i>
-                    </div>
-                    <input type="hidden" name="rating" id="rating-value" value="0">
-
-                    <!-- <input type="radio" name="rating" id="rating10" value="5" required /><label for="rating10" title="5"></label>
-                    <input type="radio" name="rating" id="rating9" value="4.5" required /><label for="rating9" title="4.5" class="half"></label>
-                    <input type="radio" name="rating" id="rating8" value="4" required /><label for="rating8" title="4"></label>
-                    <input type="radio" name="rating" id="rating7" value="3.5" required /><label for="rating7" title="3.5" class="half"></label>
-                    <input type="radio" name="rating" id="rating6" value="3" required /><label for="rating6" title="3"></label>
-                    <input type="radio" name="rating" id="rating5" value="2.5" required /><label for="rating5" title="2.5" class="half"></label>
-                    <input type="radio" name="rating" id="rating4" value="2" required /><label for="rating4" title="2"></label>
-                    <input type="radio" name="rating" id="rating3" value="1.5" required /><label for="rating3" title="1.5" class="half"></label>
-                    <input type="radio" name="rating" id="rating2" value="1" required /><label for="rating2" title="1"></label>
-                    <input type="radio" name="rating" id="rating1" value="0.5" required /><label for="rating1" title="0.5" class="half"></label> -->
-                </div>
-                <div class="mb-4">
-                    <label for="review-title" class="font-semibold mb-1 block">Review Title</label>
-                    <input type="text" name="subject" id="review-title" placeholder="e.g. Absolutely love it!" class="w-full p-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/50">
-                </div>
-                <div class="mb-6">
-                    <label for="review-body" class="font-semibold mb-1 block">Your Review</label>
-                    <textarea name="review" id="review-body" rows="5" placeholder="Tell us more about your experience..." class="w-full p-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/50"></textarea>
-                </div>
-                <button type="submit" class="bg-primary text-white w-full py-3 rounded-md font-semibold hover:bg-opacity-90 transition">Submit Review</button>
-            </form>
         </div>
+
+        <!-- Customer Reviews Section -->
+        <div id="customer-reviews-section" class="py-16 bg-secondary/30">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-serif text-center mb-10">What Our Customers Say</h2>
+                <div class="max-w-4xl mx-auto space-y-6">
+
+                    <!-- Write Review Button -->
+                    {% if user.is_authenticated %}
+                        {% if orderproduct %}
+                            <button id="open-review-modal-btn" class="w-full bg-accent text-white py-3 rounded-md font-semibold hover:bg-opacity-90 transition">Write a Review</button>
+                        {% else %}
+                            <button class="w-full bg-red-600 text-white py-3 rounded-md font-semibold hover:bg-opacity-90 transition">You must purchase this product to post a review</button>
+                        {% endif %}
+                    {% else %}
+                        <button class="w-full bg-red-600 text-white py-3 rounded-md font-semibold hover:bg-opacity-90 transition">You must be logged in to post a review <a href="{% url 'accounts:login' %}">Login now</a></button>
+                    {% endif %}
+
+                    <!-- Reviews Loop -->
+                    {% for review in reviews %}
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-semibold text-lg text-text-dark">{{ review.subject }}</h3>
+                            <div class="text-yellow-400 flex space-x-1">
+                                {% for i in "12345" %}
+                                    <i class="{% if review.rating|floatformat:2 >= i|floatformat:2 %}fas fa-star{% elif review.rating|floatformat:2 >= review.rating_half|floatformat:2 %}fas fa-star-half-alt{% else %}far fa-star{% endif %}"></i>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <p class="text-sm text-text-light mb-3">by <span class="font-medium text-text-dark">{{ review.user.full_name }}</span> on {{ review.updated_at }}</p>
+                        <p class="text-text-dark leading-relaxed">{{ review.review }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Review Form Modal -->
+<div id="review-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-[100] hidden items-center justify-center p-4">
+    <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-lg p-6 relative transform transition-transform">
+        <button id="close-review-modal" class="absolute top-4 right-4 text-2xl text-text-light hover:text-text-dark">&times;</button>
+        <h2 class="text-2xl font-serif text-primary mb-6">Write a Review</h2>
+        <form action="{% url 'store:submit_review' single_product.id %}" method="POST">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="font-semibold mb-2 block">Your Rating</label>
+                <div class="flex items-center text-3xl text-gray-300" id="star-rating">
+                    {% for i in star_range %}
+                        <i class="fas fa-star cursor-pointer" data-value="{{ i }}"></i>
+                    {% endfor %}
+                </div>
+                <input type="hidden" name="rating" id="rating-value" value="0">
+            </div>
+            <div class="mb-4">
+                <label for="review-title" class="font-semibold mb-1 block">Review Title</label>
+                <input type="text" name="subject" id="review-title" placeholder="e.g. Absolutely love it!" class="w-full p-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/50">
+            </div>
+            <div class="mb-6">
+                <label for="review-body" class="font-semibold mb-1 block">Your Review</label>
+                <textarea name="review" id="review-body" rows="5" placeholder="Tell us more about your experience..." class="w-full p-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/50"></textarea>
+            </div>
+            <button type="submit" class="bg-primary text-white w-full py-3 rounded-md font-semibold hover:bg-opacity-90 transition">Submit Review</button>
+        </form>
     </div>
+</div>
 {% endblock content %}
 
 {% block extra_js %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
 <script>
-    $(document).ready(function() {
-        // Find the main image element.
-        const $mainImage = $('.mainImage img');
-        // Find all the thumbnail anchor tags.
-        const $thumbnails = $('.thumb a');
+$(document).ready(function() {
+    const $mainImage = $('.mainImage img');
+    const $thumbnails = $('.thumb a');
 
-        $thumbnails.click(function(e) {
-            e.preventDefault();
-
-            const clickedHref = $(this).attr("href");
-            $mainImage.attr('src', clickedHref);
-
-            // 1. Remove the active class from all thumbnails.
-            //    We find the img element within each thumbnail and remove the border.
-            $thumbnails.find('img').removeClass('border-primary').addClass('border-transparent hover:border-primary');
-
-            // 2. Add the active class to the clicked thumbnail.
-            //    We find the img element within the clicked thumbnail and set the border.
-            $(this).find('img').removeClass('border-transparent hover:border-primary').addClass('border-primary');
-        });
+    $thumbnails.click(function(e) {
+        e.preventDefault();
+        const src = $(this).attr("href");
+        $mainImage.attr('src', src);
+        $thumbnails.find('img').removeClass('border-primary').addClass('border-transparent hover:border-primary');
+        $(this).find('img').removeClass('border-transparent hover:border-primary').addClass('border-primary');
     });
+});
 </script>
 {% endblock extra_js %}

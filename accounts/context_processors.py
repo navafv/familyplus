@@ -1,6 +1,8 @@
-
 from .forms import NewsletterSubscriptionForm
 
 def newsletter_form(request):
-    """Makes the newsletter form available in all templates."""
-    return {'newsletter_form': NewsletterSubscriptionForm()}
+    """
+    Adds the newsletter subscription form to all templates via context processors.
+    """
+    form = NewsletterSubscriptionForm()
+    return {'newsletter_form': form}

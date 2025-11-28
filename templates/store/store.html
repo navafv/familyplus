@@ -1,116 +1,125 @@
 {% extends "base.html" %}
 {% block content %}
-    <main>
-        <!-- Product List Page -->
-        <section id="product_list">
-            <div class="container mx-auto px-6 py-12">
-                <!-- Breadcrumbs and Title -->
-                <div class="text-center mb-10">
-                    <p class="text-text-light"><a href="{% url 'home' %}" data-page="home" class="hover:text-primary">Home</a> / {% if 'search' in request.path %}Search{% elif 'category' in request.path %}Category / {{ category }}{% else %}Store{% endif %}</p>
+<main>
+    <!-- Product List Page -->
+    <section id="product_list">
+        <div class="container mx-auto px-6 py-12">
+            <!-- Breadcrumbs and Title -->
+            <div class="text-center mb-10">
+                <p class="text-text-light">
+                    <a href="{% url 'home' %}" class="hover:text-primary">Home</a> / 
                     {% if 'search' in request.path %}
-                    <h1 class="text-4xl font-serif text-primary mt-2">Search Result for {{ keyword }}</h1>
+                        Search
                     {% elif 'category' in request.path %}
-                    <h1 class="text-4xl font-serif text-primary mt-2">{{ category }} Collections</h1>
+                        Category / {{ category }}
                     {% else %}
-                    <h1 class="text-4xl font-serif text-primary mt-2">Our Collections</h1>
+                        Store
                     {% endif %}
-                </div>
+                </p>
+                <h1 class="text-4xl font-serif text-primary mt-2">
+                    {% if 'search' in request.path %}
+                        Search Result for {{ keyword }}
+                    {% elif 'category' in request.path %}
+                        {{ category }} Collections
+                    {% else %}
+                        Our Collections
+                    {% endif %}
+                </h1>
+            </div>
 
-                <div class="flex flex-col lg:flex-row gap-10">
-                    <!-- Filters Sidebar -->
-                    <aside class="w-full lg:w-1/4">
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <h3 class="font-bold text-xl mb-4 border-b pb-2">Filters</h3>
-                            <!-- Category Filter -->
-                            <div class="mb-6">
-                                <h4 class="font-semibold mb-3">Category</h4>
-                                <div class="space-y-2">
-                                    <a href="{% url 'store' %}" class="block text-text-dark hover:text-primary">All Products</a>
-                                    {% for category in links %}
+            <div class="flex flex-col lg:flex-row gap-10">
+                <!-- Filters Sidebar -->
+                <aside class="w-full lg:w-1/4">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="font-bold text-xl mb-4 border-b pb-2">Filters</h3>
+                        <!-- Category Filter -->
+                        <div class="mb-6">
+                            <h4 class="font-semibold mb-3">Category</h4>
+                            <div class="space-y-2">
+                                <a href="{% url 'store:store' %}" class="block text-text-dark hover:text-primary">All Products</a>
+                                {% for category in links %}
                                     <a href="{{ category.get_url }}" class="block text-text-dark hover:text-primary">{{ category.category_name }}</a>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            <!-- Size Filter -->
-                            <div class="mb-6">
-                                <h4 class="font-semibold mb-3">Size</h4>
-                                <div class="flex flex-wrap gap-2">
-                                    <button class="w-10 h-10 border rounded-md hover:bg-primary hover:text-white transition">XS</button>
-                                    <button class="w-10 h-10 border rounded-md hover:bg-primary hover:text-white transition">S</button>
-                                    <button class="w-10 h-10 border rounded-md hover:bg-primary hover:text-white transition">M</button>
-                                    <button class="w-10 h-10 border rounded-md hover:bg-primary hover:text-white transition">L</button>
-                                    <button class="w-10 h-10 border rounded-md hover:bg-primary hover:text-white transition">XL</button>
-                                </div>
-                            </div>
-                            <!-- Color Filter -->
-                            <div class="mb-6">
-                                <h4 class="font-semibold mb-3">Color</h4>
-                                <div class="flex flex-wrap gap-3">
-                                    <button class="w-8 h-8 rounded-full bg-red-500 border-2 border-transparent hover:border-text-dark"></button>
-                                    <button class="w-8 h-8 rounded-full bg-blue-500 border-2 border-transparent hover:border-text-dark"></button>
-                                    <button class="w-8 h-8 rounded-full bg-green-500 border-2 border-transparent hover:border-text-dark"></button>
-                                    <button class="w-8 h-8 rounded-full bg-yellow-400 border-2 border-transparent hover:border-text-dark"></button>
-                                    <button class="w-8 h-8 rounded-full bg-black border-2 border-transparent hover:border-text-dark"></button>
-                                    <button class="w-8 h-8 rounded-full bg-white border-2 hover:border-text-dark"></button>
-                                </div>
-                            </div>
-                             <!-- Price Filter -->
-                             <div>
-                                <h4 class="font-semibold mb-3">Price</h4>
-                                <input type="range" min="0" max="500" class="w-full">
-                                <div class="flex justify-between text-sm mt-1"><span>$0</span><span>$500</span></div>
+                                {% endfor %}
                             </div>
                         </div>
-                    </aside>
-
-                    <!-- Products Grid -->
-                    <div class="w-full lg:w-3/4">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-                            <!-- Product Card Loop -->
-                            {% for product in products %}
-                            <div class="bg-white rounded-lg shadow-md overflow-hidden text-center flex flex-col">
-                                <a href="{{ product.get_url }}" class="block">
-                                    <img src="{{ product.images.url }}" alt="{{ product.product_name }}" class="w-full h-auto object-cover" />
-                                </a>
-                                <div class="p-4 flex flex-col flex-grow">
-                                    <h3 class="font-semibold text-lg text-text-dark">{{ product.product_name }}</h3>
-                                    <p class="text-primary font-bold mt-1 mb-3">₹{{ product.price }}</p>
-                                </div>
+                        <!-- Size Filter -->
+                        <div class="mb-6">
+                            <h4 class="font-semibold mb-3">Size</h4>
+                            <div class="flex flex-wrap gap-2">
+                                {% for size in sizes %}
+                                <button class="w-10 h-10 border rounded-md hover:bg-primary hover:text-white transition">{{ size }}</button>
+                                {% endfor %}
                             </div>
-                            {% empty %}
-                            <h3 class="col-span-3 font-semibold text-lg text-text-dark text-center mt-6">No Products{% if keyword %} Found for {{ keyword }}{% elif category %} in {{ category }}{% endif %}!</h3>
-                            {% endfor %}
                         </div>
+                        <!-- Color Filter -->
+                        <div class="mb-6">
+                            <h4 class="font-semibold mb-3">Color</h4>
+                            <div class="flex flex-wrap gap-3">
+                                {% for color in colors %}
+                                <button class="w-8 h-8 rounded-full bg-{{ color }}-500 border-2 border-transparent hover:border-text-dark"></button>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <!-- Price Filter -->
+                        <div>
+                            <h4 class="font-semibold mb-3">Price</h4>
+                            <input type="range" min="0" max="500" step="100" class="w-full">
+                            <div class="flex justify-between text-sm mt-1"><span>₹0</span><span>₹500</span></div>
+                        </div>
+                    </div>
+                </aside>
 
-                        <!-- Pagination -->
-                        {% if products.has_other_pages %}
-                        <div class="mt-12 flex justify-center items-center space-x-2">
-                            {% if products.has_previous %}
-                                <a href="?page={{ products.previous_page_number }}" class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">&laquo;</a>
-                            {% else %}
-                                <span class="px-4 py-2 border rounded-md text-gray-400 cursor-not-allowed">&laquo;</span>
-                            {% endif %}
-                            {% for i in custom_page_range %}
-                                {% if i == None %}
-                                    <!-- Ellipsis for gaps in page numbers -->
-                                    <span class="px-4 py-2">...</span>
-                                {% elif products.number == i %}
-                                    <a href="" class="px-4 py-2 border rounded-md bg-primary text-white">{{ i }}</a>
+                <!-- Products Grid -->
+                <div class="w-full lg:w-3/4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+                        {% for product in products %}
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col text-center">
+                            <a href="{{ product.get_url }}" class="block">
+                                <img src="{{ product.images.url }}" alt="{{ product.product_name }}" class="w-full h-64 object-cover">
+                            </a>
+                            <div class="p-4 flex flex-col flex-grow">
+                                <h3 class="font-semibold text-lg text-text-dark">{{ product.product_name }}</h3>
+                                <p class="text-primary font-bold mt-1 mb-3">₹{{ product.price }}</p>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <h3 class="col-span-3 font-semibold text-lg text-text-dark text-center mt-6">
+                            No Products{% if keyword %} Found for {{ keyword }}{% elif category %} in {{ category }}{% endif %}!
+                        </h3>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if products.has_other_pages %}
+                    <div class="mt-12 flex justify-center items-center space-x-2">
+                        {% if products.has_previous %}
+                            <a href="{% if 'search' in request.path %}?keyword={{ keyword }}&{% else %}?{% endif %}page={{ products.previous_page_number }}" class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">&laquo;</a>
+                        {% else %}
+                            <span class="px-4 py-2 border rounded-md text-gray-400 cursor-not-allowed">&laquo;</span>
+                        {% endif %}
+
+                        {% for i in custom_page_range %}
+                            {% if i %}
+                                {% if products.number == i %}
+                                    <span class="px-4 py-2 border rounded-md bg-primary text-white">{{ i }}</span>
                                 {% else %}
-                                    <!-- Other page links -->
-            <a href="?page={{ i }}" class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">{{ i }}</a>
+                                    <a href="{% if 'search' in request.path %}?keyword={{ keyword }}&{% else %}?{% endif %}page={{ i }}" class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">{{ i }}</a>
                                 {% endif %}
-                            {% endfor %}
-                            {% if products.has_next %}
-                                <a href="?page={{ products.next_page_number }}" class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">&raquo;</a>
                             {% else %}
-                                <span class="px-4 py-2 border rounded-md text-gray-400 cursor-not-allowed">&raquo;</span>
+                                <span class="px-4 py-2">...</span>
                             {% endif %}
-                        </div>
+                        {% endfor %}
+
+                        {% if products.has_next %}
+                            <a href="{% if 'search' in request.path %}?keyword={{ keyword }}&{% else %}?{% endif %}page={{ products.next_page_number }}" class="px-4 py-2 border rounded-md hover:bg-primary hover:text-white">&raquo;</a>
+                        {% else %}
+                            <span class="px-4 py-2 border rounded-md text-gray-400 cursor-not-allowed">&raquo;</span>
                         {% endif %}
                     </div>
+                    {% endif %}
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
+</main>
 {% endblock content %}
