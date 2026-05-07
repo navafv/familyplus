@@ -1,8 +1,7 @@
 from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
-from django.conf import settings
 from django.db import transaction
+from django.db.models import F
 from carts.models import CartItem
 from store.models import Product
 from .models import Order, Payment, OrderProduct
@@ -61,8 +60,14 @@ def payments(request):
         order_product.variation.set(item.variations.all())
 
         # Reduce product stock
-        item.product.stock = max(item.product.stock - item.quantity, 0)
-        item.product.save()
+        item.product.stock = F('stock') - item.quantity
+        item.product.save(update_fields=['stock'])
+
+        # Refresh from DB if you need to check if it dropped below zero (optional but good practice)
+        item.product.refresh_from_db()
+        if item.product.stock < 0:
+            # Handle edge case where overselling happened
+            pass
 
     # Clear user’s cart
     cart_items.delete()
