@@ -136,4 +136,11 @@ class OrderDetailAPIView(generics.RetrieveAPIView):
     lookup_field = 'order_number'
 
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user, is_ordered=True)
+        return Order.objects.filter(
+            user=self.request.user, 
+            is_ordered=True
+        ).prefetch_related(
+            'orderproduct_set',
+            'orderproduct_set__product',
+            'orderproduct_set__variation'
+        )

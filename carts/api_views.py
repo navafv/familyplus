@@ -152,8 +152,8 @@ class CartMergeAPIView(views.APIView):
             session_cart = Cart.objects.get(cart_id=cart_id)
             user = request.user
             
-            session_items = CartItem.objects.filter(cart=session_cart)
-            user_items = CartItem.objects.filter(user=user)
+            session_items = CartItem.objects.filter(cart=session_cart).prefetch_related('variations')
+            user_items = CartItem.objects.filter(user=user).prefetch_related('variations')
 
             for session_item in session_items:
                 session_variations = list(session_item.variations.all())

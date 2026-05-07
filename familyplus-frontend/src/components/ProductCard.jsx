@@ -8,6 +8,7 @@ const ProductCard = ({ product }) => {
                 <img 
                     src={product.images} 
                     alt={product.product_name} 
+                    loading="lazy"
                     className="w-full h-64 object-cover hover:scale-105 transition-transform duration-300"
                 />
             </Link>

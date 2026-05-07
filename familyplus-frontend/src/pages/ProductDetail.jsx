@@ -104,6 +104,7 @@ const ProductDetail = () => {
                     <img 
                         src={product.images} 
                         alt={product.product_name} 
+                        loading="lazy"
                         className="w-full max-w-md h-auto object-cover rounded-lg shadow-sm"
                     />
                     
@@ -114,6 +115,7 @@ const ProductDetail = () => {
                                     key={img.id}
                                     src={img.image}
                                     alt={`${product.product_name} thumbnail`}
+                                    loading="lazy"
                                     className="w-20 h-20 object-cover rounded border border-gray-200 cursor-pointer hover:border-blue-500 transition-colors"
                                 />
                             ))}

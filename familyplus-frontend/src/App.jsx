@@ -1,16 +1,25 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { AuthProvider, AuthContext } from './context/AuthContext';
-import Store from './pages/Store';
-import ProductDetail from './pages/ProductDetail';
-import Cart from './pages/Cart';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import VerifyEmail from './pages/VerifyEmail';
-import Checkout from './pages/Checkout';
-import OrderComplete from './pages/OrderComplete';
+import ErrorBoundary from './components/ErrorBoundary';
 
-// Placeholder Pages
+// Lazy loading components for performance optimization
+const Store = lazy(() => import('./pages/Store'));
+const ProductDetail = lazy(() => import('./pages/ProductDetail'));
+const Cart = lazy(() => import('./pages/Cart'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
+const Checkout = lazy(() => import('./pages/Checkout'));
+const OrderComplete = lazy(() => import('./pages/OrderComplete'));
+
+// Loading Fallback
+const PageLoader = () => (
+    <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+);
+
 const Home = () => (
   <div className="p-8 text-center">
     <h1 className="text-4xl font-bold mb-4">Welcome to Family Plus</h1>
@@ -18,7 +27,6 @@ const Home = () => (
   </div>
 );
 
-// Basic Layout Component
 const Layout = ({ children }) => {
   const { user, logout } = React.useContext(AuthContext);
 
@@ -62,23 +70,27 @@ const Layout = ({ children }) => {
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/store" element={<Store />} />
-            <Route path="/store/:slug" element={<ProductDetail />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/order-complete/:orderNumber" element={<OrderComplete />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/verify/:uid/:token" element={<VerifyEmail />} />
-          </Routes>
-        </Layout>
-      </BrowserRouter>
-    </AuthProvider>
+    <ErrorBoundary>
+        <AuthProvider>
+            <BrowserRouter>
+                <Layout>
+                    <Suspense fallback={<PageLoader />}>
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/store" element={<Store />} />
+                            <Route path="/store/:slug" element={<ProductDetail />} />
+                            <Route path="/cart" element={<Cart />} />
+                            <Route path="/checkout" element={<Checkout />} />
+                            <Route path="/order-complete/:orderNumber" element={<OrderComplete />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/register" element={<Register />} />
+                            <Route path="/verify/:uid/:token" element={<VerifyEmail />} />
+                        </Routes>
+                    </Suspense>
+                </Layout>
+            </BrowserRouter>
+        </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
