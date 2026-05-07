@@ -24,3 +24,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 INSTALLED_APPS += [
     # 'django_extensions',  # optional (shell_plus, etc.)
 ]
+
+# CORS Development Settings
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+]
