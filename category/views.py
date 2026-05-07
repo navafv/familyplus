@@ -1,3 +1,1 @@
-from django.shortcuts import render
-
-# Create your views here.
+# Legacy views archived in views_legacy.py

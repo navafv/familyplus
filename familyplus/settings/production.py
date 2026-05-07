@@ -1,12 +1,24 @@
 from .base import *
+import dj_database_url
 import os
 
 DEBUG = False
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='navaf.pythonanywhere.com,www.navaf.pythonanywhere.com', cast=lambda v: [s.strip() for s in v.split(',')])
 
+# Database Configuration pull from environment variable (DATABASE_URL)
+# Falls back to individual config vars if DATABASE_URL is not found
 DATABASES = {
-    'default': {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL', default=''),
+        conn_max_age=600,
+        ssl_require=True if config('DATABASE_URL', default='') else False
+    )
+}
+
+# Ensure fallback for environments where DATABASE_URL is not used
+if not DATABASES['default']:
+    DATABASES['default'] = {
         'ENGINE': config('DATABASE_ENGINE'),
         'NAME': config('DATABASE_NAME'),
         'USER': config('DATABASE_USER'),
@@ -15,7 +27,6 @@ DATABASES = {
         'PORT': config('DATABASE_PORT'),
         'CONN_MAX_AGE': 600,
     }
-}
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -23,7 +34,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Security & HTTPS
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
@@ -35,6 +46,9 @@ SECURE_REFERRER_POLICY = 'same-origin'
 X_FRAME_OPTIONS = 'DENY'
 
 CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='', cast=lambda v: [s.strip() for s in v.split(',')])
+
+# CORS Production Settings
+CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='', cast=lambda v: [s.strip() for s in v.split(',')])
 
 # Logging
 LOGGING = {

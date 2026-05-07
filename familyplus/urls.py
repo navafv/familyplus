@@ -3,31 +3,24 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from . import views
 
 urlpatterns = [
-    # Honeypot protection (optional)
-    # path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
-    # path('supersecureadmin/', admin.site.urls),
-
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
-    path('about/', views.about, name='about'),
-    path('contact/', views.contact, name='contact'),
-    path('store/', include('store.urls')),
-    path('cart/', include('carts.urls')),
-    path('accounts/', include('accounts.urls')),
-    path('orders/', include('orders.urls')),
     
     # API Token Endpoints
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    
+    # App API Endpoints
+    path('api/accounts/', include('accounts.api_urls')),
+    path('api/store/', include('store.api_urls')),
+    path('api/cart/', include('carts.api_urls')),
+    path('api/orders/', include('orders.api_urls')),
 ]
 
-# Serve media files only during development
+# Serve media files
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-# Custom error handlers
-handler404 = 'familyplus.views.error_404'
-handler500 = 'familyplus.views.error_500'
+else:
+    # In production, static/media are usually served by Nginx/S3
+    pass
